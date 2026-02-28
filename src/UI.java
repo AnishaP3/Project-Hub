@@ -1,7 +1,8 @@
-import java.awt.*;
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import java.awt.*;
 
 public class UI extends JPanel {
 
@@ -173,7 +174,7 @@ public class UI extends JPanel {
         JPanel product10 = createProductPanel("Office Blazer", 69.99, "/images/clothes/officeBlazer.jpg");
         JPanel product11 = createProductPanel("Track Suit", 49.99, "/images/clothes/athleteOutfit.jpg");
         JPanel product12 = createProductPanel("Preppy Sweater", 45.99, "/images/clothes/preppy.jpg");
-        
+
         // Adding them to the shopping page
         ProductDisplay.add(wrap(product1));
         ProductDisplay.add(wrap(product2));
@@ -231,20 +232,25 @@ public class UI extends JPanel {
 
 
         // Loading the image for the product
-        ImageIcon icon;
-        java.net.URL imageUrl = getClass().getResource(imagePath);
-
-        if (imageUrl != null) {
-        icon = new ImageIcon(imageUrl);
-        } else {
-            // Fallback to file system path if resource not found
-            icon = new ImageIcon(imagePath);
-        }
+        int boxW = 225;
+        int boxH = 150;
+        ImageIcon icon = new ImageIcon(getClass().getResource(imagePath));
         Image img = icon.getImage();
-        Image scaled = img.getScaledInstance(130, 160, Image.SCALE_SMOOTH);
-        ImageIcon scaledIcon = new ImageIcon(scaled);
-        JLabel image = new JLabel(scaledIcon);
-        panel.add(image);
+
+        // scale to fit inside the box while keeping aspect ratio
+        double scale = Math.min((double)boxW / img.getWidth(null), (double)boxH / img.getHeight(null));
+        int newW = (int)(img.getWidth(null) * scale);
+        int newH = (int)(img.getHeight(null) * scale);
+        Image scaled = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+        JLabel imageLabel = new JLabel(new ImageIcon(scaled));
+
+        // center the image inside the box
+        JPanel imageContainer = new JPanel(new GridBagLayout());
+        imageContainer.setPreferredSize(new Dimension(boxW, boxH));
+        imageContainer.setBackground(Color.WHITE); // or your card color
+        imageContainer.add(imageLabel);
+
+        panel.add(imageContainer);
 
         // Adding the product name
         JLabel productName = new JLabel(name);
