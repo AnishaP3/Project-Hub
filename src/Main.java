@@ -9,5 +9,6 @@ public class Main {
         frame.add(new UI());
 
         frame.setVisible(true);
+        
     }
 }

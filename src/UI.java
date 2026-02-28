@@ -1,8 +1,7 @@
+import java.awt.*;
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import java.awt.*;
 
 public class UI extends JPanel {
 
@@ -162,19 +161,19 @@ public class UI extends JPanel {
         filterPanel.setOpaque(false);
 
         // Creating Products
-        JPanel product1 = createProductPanel("Fur Coat", 29.99, "C:\\\\Users\\\\anish\\\\OneDrive\\\\Pictures\\\\AestheticThemes\\\\savedWallpaper.jpg");
-        JPanel product2 = createProductPanel("Fur Coat", 29.99, "C:\\\\Users\\\\anish\\\\OneDrive\\\\Pictures\\\\AestheticThemes\\\\savedWallpaper.jpg");
-        JPanel product3 = createProductPanel("Fur Coat", 29.99, "C:\\\\Users\\\\anish\\\\OneDrive\\\\Pictures\\\\AestheticThemes\\\\savedWallpaper.jpg");
-        JPanel product4 = createProductPanel("Fur Coat", 29.99, "C:\\\\Users\\\\anish\\\\OneDrive\\\\Pictures\\\\AestheticThemes\\\\savedWallpaper.jpg");
-        JPanel product5 = createProductPanel("Fur Coat", 29.99, "C:\\\\Users\\\\anish\\\\OneDrive\\\\Pictures\\\\AestheticThemes\\\\savedWallpaper.jpg");
-        JPanel product6 = createProductPanel("Fur Coat", 29.99, "C:\\\\Users\\\\anish\\\\OneDrive\\\\Pictures\\\\AestheticThemes\\\\savedWallpaper.jpg");
-        JPanel product7 = createProductPanel("Fur Coat", 29.99, "C:\\\\Users\\\\anish\\\\OneDrive\\\\Pictures\\\\AestheticThemes\\\\savedWallpaper.jpg");
-        JPanel product8 = createProductPanel("Fur Coat", 29.99, "C:\\\\Users\\\\anish\\\\OneDrive\\\\Pictures\\\\AestheticThemes\\\\savedWallpaper.jpg");
-        JPanel product9 = createProductPanel("Fur Coat", 29.99, "C:\\\\Users\\\\anish\\\\OneDrive\\\\Pictures\\\\AestheticThemes\\\\savedWallpaper.jpg");
-        JPanel product10 = createProductPanel("Fur Coat", 29.99, "C:\\\\Users\\\\anish\\\\OneDrive\\\\Pictures\\\\AestheticThemes\\\\savedWallpaper.jpg");
-        JPanel product11 = createProductPanel("Fur Coat", 29.99, "C:\\\\Users\\\\anish\\\\OneDrive\\\\Pictures\\\\AestheticThemes\\\\savedWallpaper.jpg");
-        JPanel product12 = createProductPanel("Fur Coat", 29.99, "C:\\\\Users\\\\anish\\\\OneDrive\\\\Pictures\\\\AestheticThemes\\\\savedWallpaper.jpg");
-
+        JPanel product1 = createProductPanel("Casual Hoodie", 39.99, "/images/clothes/casualHoodie.jpg");
+        JPanel product2 = createProductPanel("Checkered Tee", 24.99, "/images/clothes/checkeredTee.jpg");
+        JPanel product3 = createProductPanel("Graphic Tee", 22.99, "/images/clothes/graphicTee.jpg");
+        JPanel product4 = createProductPanel("Sweater", 44.99, "/images/clothes/sweater.jpg");
+        JPanel product5 = createProductPanel("Floral Dress", 59.99, "/images/clothes/floralDress.jpg");
+        JPanel product6 = createProductPanel("Party Dress", 79.99, "/images/clothes/partyDress.jpg");
+        JPanel product7 = createProductPanel("Denim Jacket", 64.99, "/images/clothes/denim.jpg");
+        JPanel product8 = createProductPanel("Creme Trench Coat", 89.99, "/images/clothes/cremeTrenchCoat.jpg");
+        JPanel product9 = createProductPanel("Jacket", 54.99, "/images/clothes/jacket.jpg");
+        JPanel product10 = createProductPanel("Office Blazer", 69.99, "/images/clothes/officeBlazer.jpg");
+        JPanel product11 = createProductPanel("Track Suit", 49.99, "/images/clothes/athleteOutfit.jpg");
+        JPanel product12 = createProductPanel("Preppy Sweater", 45.99, "/images/clothes/preppy.jpg");
+        
         // Adding them to the shopping page
         ProductDisplay.add(wrap(product1));
         ProductDisplay.add(wrap(product2));
@@ -232,9 +231,17 @@ public class UI extends JPanel {
 
 
         // Loading the image for the product
-        ImageIcon icon = new ImageIcon(imagePath);
+        ImageIcon icon;
+        java.net.URL imageUrl = getClass().getResource(imagePath);
+
+        if (imageUrl != null) {
+        icon = new ImageIcon(imageUrl);
+        } else {
+            // Fallback to file system path if resource not found
+            icon = new ImageIcon(imagePath);
+        }
         Image img = icon.getImage();
-        Image scaled = img.getScaledInstance(225, 150, Image.SCALE_SMOOTH);
+        Image scaled = img.getScaledInstance(130, 160, Image.SCALE_SMOOTH);
         ImageIcon scaledIcon = new ImageIcon(scaled);
         JLabel image = new JLabel(scaledIcon);
         panel.add(image);
