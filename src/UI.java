@@ -3,13 +3,16 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.MouseEvent;
 
 public class UI extends JPanel {
 
     // =========================
     // MAIN UI SETUP
     // =========================
-
+    CardLayout cardLayout = new CardLayout();
+    JPanel pages = new JPanel(cardLayout);
+    
     public UI() {
 
         // Setting UI layout
@@ -18,8 +21,6 @@ public class UI extends JPanel {
         // =========================
         // PAGE SWITCHING (TITLE + SHOPPING)
         // =========================
-        CardLayout cardLayout = new CardLayout();
-        JPanel pages = new JPanel(cardLayout);
 
         // Creating Shopping Page Panel
         JPanel shoppingPage = new JPanel();
@@ -216,7 +217,7 @@ public class UI extends JPanel {
     // PRODUCT CARD TEMPLATE
     // Creates a single product card with image, name, price, and button
     // =========================
-    public JPanel createProductPanel(String name, double priceValue, String imagePath){
+    public JPanel createProductPanel(String name, double priceValue, String imagePath) {
         // Creating the panel for the product
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -258,11 +259,16 @@ public class UI extends JPanel {
         productName.setCursor(new Cursor(Cursor.HAND_CURSOR));
         productName.setAlignmentX(JLabel.LEFT_ALIGNMENT);
         productName.setBorder(new EmptyBorder(5,0,2,0));
+
         productName.addMouseListener(new java.awt.event.MouseAdapter() {
             // TODO: Add Product Details
-
-        }
-        );
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                productDetail detail = new productDetail(name, imagePath, cardLayout, pages);
+                pages.add(detail, "DETAIL");
+                cardLayout.show(pages, "DETAIL");
+            }
+        });
         panel.add(productName);
 
         // Price
