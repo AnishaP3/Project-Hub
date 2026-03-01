@@ -1,9 +1,10 @@
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.util.List;
 
 public class UI extends JPanel {
 
@@ -31,6 +32,9 @@ public class UI extends JPanel {
         JPanel ProductDisplay = new JPanel();
         ProductDisplay.setLayout(new GridLayout(4,3,20,20));
         ProductDisplay.setBackground(new Color(245, 241, 232));
+
+        //getting products from CSV file
+        List<Products> productsList = Products.readProductCSV(getClass().getClassLoader());
 
         // =========================
         // LANDING PAGE (TITLE SCREEN)
@@ -162,33 +166,11 @@ public class UI extends JPanel {
         filterPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         filterPanel.setOpaque(false);
 
-        // Creating Products
-        JPanel product1 = createProductPanel("Casual Hoodie", 39.99, "/images/clothes/casualHoodie.jpg");
-        JPanel product2 = createProductPanel("Checkered Tee", 24.99, "/images/clothes/checkeredTee.jpg");
-        JPanel product3 = createProductPanel("Graphic Tee", 22.99, "/images/clothes/graphicTee.jpg");
-        JPanel product4 = createProductPanel("Sweater", 44.99, "/images/clothes/sweater.jpg");
-        JPanel product5 = createProductPanel("Floral Dress", 59.99, "/images/clothes/floralDress.jpg");
-        JPanel product6 = createProductPanel("Party Dress", 79.99, "/images/clothes/partyDress.jpg");
-        JPanel product7 = createProductPanel("Denim Jacket", 64.99, "/images/clothes/denim.jpg");
-        JPanel product8 = createProductPanel("Creme Trench Coat", 89.99, "/images/clothes/cremeTrenchCoat.jpg");
-        JPanel product9 = createProductPanel("Jacket", 54.99, "/images/clothes/jacket.jpg");
-        JPanel product10 = createProductPanel("Office Blazer", 69.99, "/images/clothes/officeBlazer.jpg");
-        JPanel product11 = createProductPanel("Track Suit", 49.99, "/images/clothes/athleteOutfit.jpg");
-        JPanel product12 = createProductPanel("Preppy Sweater", 45.99, "/images/clothes/preppy.jpg");
-
-        // Adding them to the shopping page
-        ProductDisplay.add(wrap(product1));
-        ProductDisplay.add(wrap(product2));
-        ProductDisplay.add(wrap(product3));
-        ProductDisplay.add(wrap(product4));
-        ProductDisplay.add(wrap(product5));
-        ProductDisplay.add(wrap(product6));
-        ProductDisplay.add(wrap(product7));
-        ProductDisplay.add(wrap(product8));
-        ProductDisplay.add(wrap(product9));
-        ProductDisplay.add(wrap(product10));
-        ProductDisplay.add(wrap(product11));
-        ProductDisplay.add(wrap(product12));
+        //going through each product and adding them to shopping page
+        for (Products product : productsList) {
+            JPanel productPanel = createProductPanel(product);
+            ProductDisplay.add(wrap(productPanel));
+        }
 
         // Scroll Panel for the shopping grid
         ProductDisplay.setPreferredSize(new Dimension(700, 1200));
@@ -217,7 +199,7 @@ public class UI extends JPanel {
     // PRODUCT CARD TEMPLATE
     // Creates a single product card with image, name, price, and button
     // =========================
-    public JPanel createProductPanel(String name, double priceValue, String imagePath) {
+    public JPanel createProductPanel(Products products) {
         // Creating the panel for the product
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -235,7 +217,7 @@ public class UI extends JPanel {
         // Loading the image for the product
         int boxW = 225;
         int boxH = 150;
-        ImageIcon icon = new ImageIcon(getClass().getResource(imagePath));
+        ImageIcon icon = new ImageIcon(getClass().getResource(products.getImagePath()));
         Image img = icon.getImage();
 
         // scale to fit inside the box while keeping aspect ratio
@@ -254,7 +236,7 @@ public class UI extends JPanel {
         panel.add(imageContainer);
 
         // Adding the product name
-        JLabel productName = new JLabel(name);
+        JLabel productName = new JLabel(products.getName());
         productName.setFont(new Font("Segoe UI", Font.BOLD, 16));
         productName.setCursor(new Cursor(Cursor.HAND_CURSOR));
         productName.setAlignmentX(JLabel.LEFT_ALIGNMENT);
@@ -264,7 +246,7 @@ public class UI extends JPanel {
             // TODO: Add Product Details
             @Override
             public void mouseClicked(MouseEvent e) {
-                productDetail detail = new productDetail(name, imagePath, cardLayout, pages);
+                ProductDetail detail = new ProductDetail(products,cardLayout, pages);
                 pages.add(detail, "DETAIL");
                 cardLayout.show(pages, "DETAIL");
             }
@@ -272,7 +254,7 @@ public class UI extends JPanel {
         panel.add(productName);
 
         // Price
-        JLabel price = new JLabel("$" + String.valueOf(priceValue));
+        JLabel price = new JLabel("$" + String.valueOf(products.getPrice()));
         price.setFont(new Font("Segoe UI", Font.BOLD, 20));
         price.setForeground(new Color(138, 28, 28));
         price.setAlignmentX(JLabel.LEFT_ALIGNMENT);
