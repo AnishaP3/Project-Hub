@@ -53,9 +53,9 @@ public class UI extends JPanel {
         bottomImages.setBorder(new EmptyBorder(30, 0, 60, 0));
 
         // Load images
-        ImageIcon iconA = new ImageIcon(getClass().getResource("/Resources/csv/Images/clothes/image1_title.jpg"));
-        ImageIcon iconB = new ImageIcon(getClass().getResource("/Resources/csv/Images/clothes/image2_title.jpg"));
-        ImageIcon iconC = new ImageIcon(getClass().getResource("/Resources/csv/Images/clothes/image3_title.jpg"));
+        ImageIcon iconA = new ImageIcon(getClass().getResource("/clothes/image1_title.jpg"));
+        ImageIcon iconB = new ImageIcon(getClass().getResource("/clothes/image2_title.jpg"));
+        ImageIcon iconC = new ImageIcon(getClass().getResource("/clothes/image3_title.jpg"));
 
         // Scale images to fit inside cards while maintaining aspect ratio
         int cardImgSize = 240;
@@ -257,7 +257,7 @@ public class UI extends JPanel {
         panel.add(productName);
 
         // Price
-        JLabel price = new JLabel("$" + String.valueOf(products.getPrice()));
+        JLabel price = new JLabel("$" + products.getPrice());
         price.setFont(new Font("Segoe UI", Font.BOLD, 20));
         price.setForeground(new Color(138, 28, 28));
         price.setAlignmentX(JLabel.LEFT_ALIGNMENT);
