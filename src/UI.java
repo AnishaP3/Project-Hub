@@ -3,7 +3,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.io.File;
 import java.util.List;
 
 public class UI extends JPanel {
@@ -13,7 +12,7 @@ public class UI extends JPanel {
     // =========================
     CardLayout cardLayout = new CardLayout();
     JPanel pages = new JPanel(cardLayout);
-    
+
     public UI() {
 
         // Setting UI layout
@@ -32,6 +31,7 @@ public class UI extends JPanel {
         JPanel ProductDisplay = new JPanel();
         ProductDisplay.setLayout(new GridLayout(4,3,20,20));
         ProductDisplay.setBackground(new Color(245, 241, 232));
+        ProductDisplay.setBorder(new EmptyBorder(20, 0, 20, 0));
 
         //getting products from CSV file
         List<Products> productsList = Products.readProductCSV(getClass().getClassLoader());
@@ -53,34 +53,38 @@ public class UI extends JPanel {
         bottomImages.setBorder(new EmptyBorder(30, 0, 60, 0));
 
         // Load images
-        ImageIcon iconA = new ImageIcon(getClass().getResource("/images/image1_title.jpg"));
-        ImageIcon iconB = new ImageIcon(getClass().getResource("/images/image2_title.jpg"));
-        ImageIcon iconC = new ImageIcon(getClass().getResource("/images/image3_title.jpg"));
+        ImageIcon iconA = new ImageIcon(getClass().getResource("/Resources/csv/Images/clothes/image1_title.jpg"));
+        ImageIcon iconB = new ImageIcon(getClass().getResource("/Resources/csv/Images/clothes/image2_title.jpg"));
+        ImageIcon iconC = new ImageIcon(getClass().getResource("/Resources/csv/Images/clothes/image3_title.jpg"));
 
-        // Scale images
-        JLabel img1 = new JLabel(new ImageIcon(iconA.getImage().getScaledInstance(230, 230, Image.SCALE_SMOOTH)));
-        JLabel img2 = new JLabel(new ImageIcon(iconB.getImage().getScaledInstance(230, 230, Image.SCALE_SMOOTH)));
-        JLabel img3 = new JLabel(new ImageIcon(iconC.getImage().getScaledInstance(230, 230, Image.SCALE_SMOOTH)));
+        // Scale images to fit inside cards while maintaining aspect ratio
+        int cardImgSize = 240;
+        JLabel img1 = new JLabel(new ImageIcon(scaleToFit(iconA.getImage(), cardImgSize, cardImgSize)));
+        JLabel img2 = new JLabel(new ImageIcon(scaleToFit(iconB.getImage(), cardImgSize, cardImgSize)));
+        JLabel img3 = new JLabel(new ImageIcon(scaleToFit(iconC.getImage(), cardImgSize, cardImgSize)));
+        img1.setHorizontalAlignment(JLabel.CENTER);
+        img2.setHorizontalAlignment(JLabel.CENTER);
+        img3.setHorizontalAlignment(JLabel.CENTER);
 
 
         // Create separate cards for each image
-        JPanel card1 = new JPanel(new BorderLayout());
+        JPanel card1 = new JPanel(new GridBagLayout());
         card1.setBackground(Color.WHITE);
         card1.setPreferredSize(new Dimension(260, 260));
         card1.setBorder(new LineBorder(new Color(220,220,220), 1, true));
-        card1.add(img1, BorderLayout.CENTER);
+        card1.add(img1);
 
-        JPanel card2 = new JPanel(new BorderLayout());
+        JPanel card2 = new JPanel(new GridBagLayout());
         card2.setBackground(Color.WHITE);
         card2.setPreferredSize(new Dimension(260, 260));
         card2.setBorder(new LineBorder(new Color(220,220,220), 1, true));
-        card2.add(img2, BorderLayout.CENTER);
+        card2.add(img2);
 
-        JPanel card3 = new JPanel(new BorderLayout());
+        JPanel card3 = new JPanel(new GridBagLayout());
         card3.setBackground(Color.WHITE);
         card3.setPreferredSize(new Dimension(260, 260));
         card3.setBorder(new LineBorder(new Color(220,220,220), 1, true));
-        card3.add(img3, BorderLayout.CENTER);
+        card3.add(img3);
 
         // Add cards to bottom panel
         bottomImages.add(card1);
@@ -243,7 +247,6 @@ public class UI extends JPanel {
         productName.setBorder(new EmptyBorder(5,0,2,0));
 
         productName.addMouseListener(new java.awt.event.MouseAdapter() {
-            // TODO: Add Product Details
             @Override
             public void mouseClicked(MouseEvent e) {
                 ProductDetail detail = new ProductDetail(products,cardLayout, pages);
@@ -280,6 +283,14 @@ public class UI extends JPanel {
         wrapper.setOpaque(false);
         wrapper.add(card);
         return wrapper;
+    }
+
+    // Helper: scales an image to fit within maxW x maxH while preserving aspect ratio
+    private Image scaleToFit(Image img, int maxW, int maxH) {
+        int w = img.getWidth(null);
+        int h = img.getHeight(null);
+        double scale = Math.min((double) maxW / w, (double) maxH / h);
+        return img.getScaledInstance((int)(w * scale), (int)(h * scale), Image.SCALE_SMOOTH);
     }
 
 }
