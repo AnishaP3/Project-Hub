@@ -18,7 +18,7 @@ public class UI extends JPanel {
         shoppingPage.setBackground(new Color(245, 241, 232));
 
         JPanel ProductDisplay = new JPanel();
-        ProductDisplay.setLayout(new GridLayout(4, 3, 20, 20));
+        ProductDisplay.setLayout(new FlowLayout(FlowLayout.LEFT, 25, 25));
         ProductDisplay.setBackground(new Color(245, 241, 232));
         ProductDisplay.setBorder(new EmptyBorder(20, 0, 20, 0));
 
@@ -165,7 +165,8 @@ public class UI extends JPanel {
     public JPanel createProductPanel(Products products) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setMaximumSize(new Dimension(300, Integer.MAX_VALUE));
+        panel.setPreferredSize(new Dimension(260, 340));
+        panel.setMaximumSize(new Dimension(260, 340));
         panel.setBackground(Color.WHITE);
         panel.setBorder(
                 BorderFactory.createCompoundBorder(
@@ -176,7 +177,8 @@ public class UI extends JPanel {
         panel.setOpaque(true);
 
         // Image
-        int boxW = 225, boxH = 150;
+        int boxW = 240;
+        int boxH = 180;
         ImageIcon icon = new ImageIcon(getClass().getResource(products.getImagePath()));
         Image img = icon.getImage();
         double scale = Math.min((double) boxW / img.getWidth(null), (double) boxH / img.getHeight(null));
