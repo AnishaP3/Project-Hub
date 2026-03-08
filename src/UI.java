@@ -9,6 +9,9 @@ public class UI extends JPanel {
 
     CardLayout cardLayout = new CardLayout();
     JPanel pages = new JPanel(cardLayout);
+    List<Products> productsList;
+    JPanel ProductDisplay;
+    Filter filter;
 
     public UI() {
         setLayout(new BorderLayout());
@@ -17,12 +20,12 @@ public class UI extends JPanel {
         shoppingPage.setLayout(new BorderLayout());
         shoppingPage.setBackground(new Color(245, 241, 232));
 
-        JPanel ProductDisplay = new JPanel();
+        ProductDisplay = new JPanel();
         ProductDisplay.setLayout(new FlowLayout(FlowLayout.LEFT, 25, 25));
         ProductDisplay.setBackground(new Color(245, 241, 232));
         ProductDisplay.setBorder(new EmptyBorder(20, 0, 20, 0));
 
-        List<Products> productsList = Products.readProductCSV(getClass().getClassLoader());
+        productsList = Products.readProductCSV(getClass().getClassLoader());
 
         // =========================
         // LANDING PAGE
@@ -128,10 +131,115 @@ public class UI extends JPanel {
         // SHOPPING PAGE
         // =========================
         JPanel filterPanel = new JPanel();
+        JScrollPane filterScroll = new JScrollPane(filterPanel);
+        filterScroll.setPreferredSize(new Dimension(250, 0));
+        filterScroll.setOpaque(false);
         filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.Y_AXIS));
-        filterPanel.setPreferredSize(new Dimension(250, 0));
         filterPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         filterPanel.setOpaque(false);
+
+        JLabel filterTitle = new JLabel("Filters");
+        filterTitle.setFont(new Font("SansSerif", Font.BOLD, 25));
+        filterTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        filterPanel.add(filterTitle);
+        filterPanel.add(Box.createRigidArea(new Dimension(0, 25)));
+
+        filter = new Filter(productsList);
+
+        // Color filter
+        JLabel colorLabel = new JLabel("Color");
+        colorLabel.setFont(new Font("SansSerif", Font.BOLD, 15));
+        colorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        String[] colors = {"All", "Grey", "Black", "White", "Cream", "Pink", "Blue", "Green"};
+        JComboBox<String> colorComboBox = new JComboBox<>(colors);
+        filterPanel.add(colorLabel);
+        filterPanel.add(colorComboBox);
+        colorComboBox.setBorder(new EmptyBorder(35, 35, 35, 35));
+        colorComboBox.addActionListener(e -> {
+           String color = (String) colorComboBox.getSelectedItem();
+           if (color.equals("All")) {
+               refreshProducts(productsList);
+           } else {
+               List<Products> filtered = filter.filterByColor(color);
+               refreshProducts(filtered);
+           }
+        });
+
+        // Size filter
+        JLabel sizeLabel = new JLabel("Size");
+        sizeLabel.setFont(new Font("SansSerif", Font.BOLD, 15));
+        sizeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        String[] sizes = {"All", "Small", "Medium", "Large"};
+        JComboBox<String> sizeComboBox = new JComboBox<>(sizes);
+        filterPanel.add(sizeLabel);
+        filterPanel.add(sizeComboBox);
+        sizeComboBox.setBorder(new EmptyBorder(35, 35, 35, 35));
+        sizeComboBox.addActionListener(e -> {
+            String size = (String) sizeComboBox.getSelectedItem();
+            if (size.equals("All")) {
+                refreshProducts(productsList);
+            } else {
+                List<Products> filtered = filter.filterBySize(size);
+                refreshProducts(filtered);
+            }
+        });
+
+        // Category filter
+        JLabel categoryLabel = new JLabel("Category");
+        categoryLabel.setFont(new Font("SansSerif", Font.BOLD, 15));
+        categoryLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        String[] categories = {"All", "Hoodie", "Shirt", "T-Shirt", "Sweater", "Dress", "Jacket", "Coat", "Blazer", "Track Suit"};
+        JComboBox<String> categoryComboBox = new JComboBox<>(categories);
+        filterPanel.add(categoryLabel);
+        filterPanel.add(categoryComboBox);
+        categoryComboBox.setBorder(new EmptyBorder(35, 35, 35, 35));
+        categoryComboBox.addActionListener(e -> {
+           String category = (String) categoryComboBox.getSelectedItem();
+           if (category.equals("All")) {
+               refreshProducts(productsList);
+           } else {
+               List<Products> filtered = filter.filterByCategory(category);
+               refreshProducts(filtered);
+           }
+        });
+
+        // Material filter
+        JLabel materialLabel = new JLabel("Material");
+        materialLabel.setFont(new Font("SansSerif", Font.BOLD, 15));
+        materialLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        String[] materials = {"All", "Cotton", "Polyester", "Wool", "Acrylic", "Denim", "Chiffon", "Viscose"};
+        JComboBox<String> materialComboBox = new JComboBox<>(materials);
+        filterPanel.add(materialLabel);
+        filterPanel.add(materialComboBox);
+        materialComboBox.setBorder(new EmptyBorder(35, 35, 35, 35));
+        materialComboBox.addActionListener(e -> {
+           String material = (String) materialComboBox.getSelectedItem();
+           if (material.equals("All")) {
+               refreshProducts(productsList);
+           } else {
+               List<Products> filtered = filter.filterByMaterial(material);
+               refreshProducts(filtered);
+           }
+        });
+
+        // Rating filter
+        JLabel ratingLabel = new JLabel("Rating");
+        ratingLabel.setFont(new Font("SansSerif", Font.BOLD, 15));
+        ratingLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        String[] ratings = {"All", "3+", "3.5+", "4+", "4.5+", "5+"};
+        JComboBox<String> ratingComboBox = new JComboBox<>(ratings);
+        filterPanel.add(ratingLabel);
+        filterPanel.add(ratingComboBox);
+        ratingComboBox.setBorder(new EmptyBorder(35, 35, 35, 35));
+        ratingComboBox.addActionListener(e -> {
+            String rating = (String) ratingComboBox.getSelectedItem();
+            if (rating.equals("All")) {
+                refreshProducts(productsList);
+            }
+            double ratingValue = Double.parseDouble(rating.replace("+", ""));
+            List<Products> filtered = filter.filterByRating(ratingValue);
+            refreshProducts(filtered);
+        });
 
         for (Products product : productsList) {
             JPanel productPanel = createProductPanel(product);
@@ -145,7 +253,7 @@ public class UI extends JPanel {
         scrollPane.getViewport().setOpaque(false);
         scrollPane.setOpaque(false);
 
-        shoppingPage.add(filterPanel, BorderLayout.WEST);
+        shoppingPage.add(filterScroll, BorderLayout.WEST);
         pages.add(title, "TITLE");
         pages.add(shoppingPage, "SHOPPING");
 
@@ -260,5 +368,15 @@ public class UI extends JPanel {
         int h = img.getHeight(null);
         double scale = Math.min((double) maxW / w, (double) maxH / h);
         return img.getScaledInstance((int) (w * scale), (int) (h * scale), Image.SCALE_SMOOTH);
+    }
+
+    private void refreshProducts(List<Products> list) {
+        ProductDisplay.removeAll();
+        for (Products product : list) {
+            JPanel productPanel = createProductPanel(product);
+            ProductDisplay.add(wrap(productPanel));
+        }
+        ProductDisplay.revalidate();
+        ProductDisplay.repaint();
     }
 }

@@ -7,13 +7,21 @@ public class Products {
     String name;
     String imagePath;
     String details;
+    String category;
+    String color;
+    String material;
+    String size;
     double price;
     double rating;
 
-    Products(String name, String imagePath, String details, double price, double rating) {
+    Products(String name, String imagePath, String details, String category, String color, String material, String size, double price, double rating) {
         this.name = name;
         this.imagePath = imagePath;
         this.details = details;
+        this.category = category;
+        this.color = color;
+        this.material = material;
+        this.size = size;
         this.price = price;
         this.rating = rating;
     }
@@ -30,6 +38,18 @@ public class Products {
 
     public String getDetails() { return details; }
     public void setDetails(String details) { this.details = details; }
+
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
+
+    public String getColor() { return color; }
+    public void setColor(String color) { this.color = color; }
+
+    public String getMaterial() { return material; }
+    public void setMaterial(String material) { this.material = material; }
+
+    public String getSize() { return size; }
+    public void setSize(String size) { this.size = size; }
 
     public double getRating() { return rating; }
     public void setRating(double rating) { this.rating = rating; }
@@ -52,14 +72,18 @@ public class Products {
                     String line = scanner.nextLine();
                     String[] parts = line.split("\\|");
 
-                    if (parts.length == 5) {
+                    if (parts.length == 9) {
                         String name      = parts[0].trim();
                         double price     = Double.parseDouble(parts[1].trim());
                         String imagePath = parts[2].trim();
                         String details   = parts[3].trim();
-                        double rating    = Double.parseDouble(parts[4].trim());
+                        String category = parts[4].trim();
+                        String color      = parts[5].trim();
+                        String  material    = parts[6].trim();
+                        String  size        = parts[7].trim();
+                        double rating    = Double.parseDouble(parts[8].trim());
 
-                        products.add(new Products(name, imagePath, details, price, rating));
+                        products.add(new Products(name, imagePath, details, category, color, material, size, price, rating));
                     } else {
                         System.out.println("Skipping invalid line: " + line);
                     }
