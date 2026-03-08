@@ -1,6 +1,7 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.List;
@@ -137,9 +138,14 @@ public class UI extends JPanel {
         filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.Y_AXIS));
         filterPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         filterPanel.setOpaque(false);
+        filterPanel.setBorder(BorderFactory.createCompoundBorder(
+                new MatteBorder(5, 0, 5, 0, new Color(255, 230, 120)), // soft yellow shadow
+                new EmptyBorder(12, 12, 12, 12)
+        ));
 
-        JLabel filterTitle = new JLabel("Filters");
-        filterTitle.setFont(new Font("SansSerif", Font.BOLD, 25));
+        JLabel filterTitle = new JLabel("ꜰɪʟᴛᴇʀ ᴘʀᴏᴅᴜᴄᴛꜱ");
+        filterTitle.setFont(new Font("SansSerif", Font.BOLD, 20));
+        filterTitle.setForeground(new Color(212, 175, 55));
         filterTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         filterPanel.add(filterTitle);
         filterPanel.add(Box.createRigidArea(new Dimension(0, 25)));
@@ -152,6 +158,7 @@ public class UI extends JPanel {
         colorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         String[] colors = {"All", "Grey", "Black", "White", "Cream", "Pink", "Blue", "Green"};
         JComboBox<String> colorComboBox = new JComboBox<>(colors);
+        colorComboBox.setPreferredSize(new Dimension(150, 75));
         filterPanel.add(colorLabel);
         filterPanel.add(colorComboBox);
         colorComboBox.setBorder(new EmptyBorder(35, 35, 35, 35));
@@ -171,6 +178,7 @@ public class UI extends JPanel {
         sizeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         String[] sizes = {"All", "Small", "Medium", "Large"};
         JComboBox<String> sizeComboBox = new JComboBox<>(sizes);
+        sizeComboBox.setPreferredSize(new Dimension(150, 75));
         filterPanel.add(sizeLabel);
         filterPanel.add(sizeComboBox);
         sizeComboBox.setBorder(new EmptyBorder(35, 35, 35, 35));
@@ -190,6 +198,7 @@ public class UI extends JPanel {
         categoryLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         String[] categories = {"All", "Hoodie", "Shirt", "T-Shirt", "Sweater", "Dress", "Jacket", "Coat", "Blazer", "Track Suit"};
         JComboBox<String> categoryComboBox = new JComboBox<>(categories);
+        categoryComboBox.setPreferredSize(new Dimension(150, 75));
         filterPanel.add(categoryLabel);
         filterPanel.add(categoryComboBox);
         categoryComboBox.setBorder(new EmptyBorder(35, 35, 35, 35));
@@ -209,6 +218,7 @@ public class UI extends JPanel {
         materialLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         String[] materials = {"All", "Cotton", "Polyester", "Wool", "Acrylic", "Denim", "Chiffon", "Viscose"};
         JComboBox<String> materialComboBox = new JComboBox<>(materials);
+        materialComboBox.setPreferredSize(new Dimension(150, 75));
         filterPanel.add(materialLabel);
         filterPanel.add(materialComboBox);
         materialComboBox.setBorder(new EmptyBorder(35, 35, 35, 35));
@@ -228,6 +238,7 @@ public class UI extends JPanel {
         ratingLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         String[] ratings = {"All", "3+", "3.5+", "4+", "4.5+", "5+"};
         JComboBox<String> ratingComboBox = new JComboBox<>(ratings);
+        ratingComboBox.setPreferredSize(new Dimension(150, 75));
         filterPanel.add(ratingLabel);
         filterPanel.add(ratingComboBox);
         ratingComboBox.setBorder(new EmptyBorder(35, 35, 35, 35));
