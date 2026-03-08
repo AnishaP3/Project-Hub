@@ -56,12 +56,13 @@ public class ProductDetail extends JPanel {
 
         // Header
         JPanel header = new JPanel(new BorderLayout());
-        header.setBackground(new Color(13, 13, 13));
+//        header.setBackground(new Color(255, 255, 255, 255));
+        header.setOpaque(false);
         header.setPreferredSize(new Dimension(0, 60));
 
-        JButton backButton = new JButton("← Back");
+        JButton backButton = new JButton("←\uD835\uDE3D\uD835\uDE3C\uD835\uDE3E\uD835\uDE46");
         backButton.setFont(new Font("SansSerif", Font.BOLD, 16));
-        backButton.setForeground(Color.WHITE);
+        backButton.setForeground(Color.BLACK);
         backButton.setBorder(new EmptyBorder(0, 20, 0, 0));
         backButton.setContentAreaFilled(false);
         backButton.setFocusPainted(false);
