@@ -3,9 +3,13 @@ import java.util.List;
 
 public class Filter {
     List<Products> products = new ArrayList<>();
+
+    // Constructor
     public Filter(List<Products> products) {
         this.products = products;
     }
+
+    // Filters products by category
     public List<Products> filterByCategory(String category) {
         List<Products> filtered = new ArrayList<>();
         for (Products p : products) {
@@ -15,6 +19,8 @@ public class Filter {
         }
         return filtered;
     }
+
+    // Filters products by product
     public List<Products> filterByColor(String color) {
         List<Products> filtered = new ArrayList<>();
         for (Products p : products) {
@@ -28,6 +34,8 @@ public class Filter {
         }
         return filtered;
     }
+
+    // Filters Products by Material
     public List<Products> filterByMaterial(String material) {
         List<Products> filtered = new ArrayList<>();
         for (Products p : products) {
@@ -41,6 +49,8 @@ public class Filter {
         }
         return filtered;
     }
+
+    // Filters Products by Size
     public List<Products> filterBySize(String size) {
         List<Products> filtered = new ArrayList<>();
         for (Products p : products) {
@@ -54,6 +64,8 @@ public class Filter {
         }
         return filtered;
     }
+
+    // Filters Products by Rating
     public List<Products> filterByRating(double rating) {
         List<Products> filtered = new ArrayList<>();
         for (Products p : products) {

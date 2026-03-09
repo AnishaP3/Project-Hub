@@ -8,6 +8,7 @@ public class ProductDetail extends JPanel {
     private CardLayout cardLayout;
     private JPanel pages;
 
+    // Constructor
     public ProductDetail(Products product, CardLayout cardLayout, JPanel pages) {
         this.product = product;
         this.cardLayout = cardLayout;
@@ -15,7 +16,8 @@ public class ProductDetail extends JPanel {
         setupPanel();
     }
 
-    private String parseField(String details, String fieldName) {
+    // Parses fields for values after colon
+    public String parseField(String details, String fieldName) {
         String[] lines = details.split("\\. ");
         for (String line : lines) {
             String trimmed = line.trim();
@@ -26,40 +28,51 @@ public class ProductDetail extends JPanel {
         return "—";
     }
 
-    private String parseOutfitDescription(String details) {
+    // Parses Outfit Description from CSV
+    public String parseOutfitDescription(String details) {
         int idx = details.toLowerCase().indexOf("material:");
         if (idx > 0) return details.substring(0, idx).trim().replaceAll("\\.$", "");
         return details;
     }
 
     // Builds a star string supporting half stars
-    private String buildStarString(double rating) {
+    public String buildStarString(double rating) {
         StringBuilder sb = new StringBuilder();
         int full = (int) rating;
         boolean half = (rating - full) >= 0.5;
         int empty = 5 - full - (half ? 1 : 0);
-        for (int i = 0; i < full; i++)  sb.append("★");
-        if (half)                        sb.append("½");
-        for (int i = 0; i < empty; i++) sb.append("☆");
+        for (int i = 0; i < full; i++) {
+            sb.append("★");
+        }
+        if (half) {
+            sb.append("½");
+        }
+        for (int i = 0; i < empty; i++) {
+            sb.append("☆");
+        }
         return sb.toString();
     }
 
-    private void setupPanel() {
+    // ==========================================
+    // Sets up the Panel for Product Description
+    // ==========================================
+
+    public void setupPanel() {
         setLayout(new BorderLayout());
         setBackground(new Color(245, 241, 232));
 
         String rawDetails = product.getDetails();
         String outfitDesc = parseOutfitDescription(rawDetails);
-        String material   = parseField(rawDetails, "Material");
-        String color      = parseField(rawDetails, "Color");
-        String sizes      = parseField(rawDetails, "Sizes Available");
+        String material = parseField(rawDetails, "Material");
+        String color = parseField(rawDetails, "Color");
+        String sizes = parseField(rawDetails, "Sizes Available");
 
         // Header
         JPanel header = new JPanel(new BorderLayout());
-//        header.setBackground(new Color(255, 255, 255, 255));
         header.setOpaque(false);
         header.setPreferredSize(new Dimension(0, 60));
 
+        // Creating Back Button and adding it to the header
         JButton backButton = new JButton("←\uD835\uDE3D\uD835\uDE3C\uD835\uDE3E\uD835\uDE46");
         backButton.setFont(new Font("SansSerif", Font.BOLD, 16));
         backButton.setForeground(Color.BLACK);
@@ -70,12 +83,12 @@ public class ProductDetail extends JPanel {
         header.add(backButton, BorderLayout.WEST);
         add(header, BorderLayout.NORTH);
 
-        // Main content
+        // Main content Panel
         JPanel mainContent = new JPanel(new GridLayout(1, 2, 60, 0));
         mainContent.setBackground(new Color(245, 241, 232));
         mainContent.setBorder(new EmptyBorder(40, 40, 40, 40));
 
-        // LEFT: Image
+        // LEFT: Adjusts Image of product
         int bigImgW = 480, bigImgH = 580;
         ImageIcon icon = new ImageIcon(getClass().getResource(product.getImagePath()));
         Image image = icon.getImage();
@@ -92,16 +105,17 @@ public class ProductDetail extends JPanel {
         imageContainer.setBorder(new LineBorder(new Color(220, 220, 220), 1, false));
         imageContainer.add(imageLabel);
 
-        // RIGHT: Info
+        // RIGHT: Info about the product
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
         infoPanel.setBackground(new Color(245, 241, 232));
 
-        // Name
+        // Name of the product
         JLabel nameLabel = new JLabel(product.getName().toUpperCase());
         nameLabel.setFont(new Font("SansSerif", Font.BOLD, 26));
         nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+        // Adds a line as a separator
         JSeparator sep1 = new JSeparator();
         sep1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
         sep1.setForeground(new Color(200, 200, 200));
@@ -129,6 +143,7 @@ public class ProductDetail extends JPanel {
         descText.setAlignmentX(Component.LEFT_ALIGNMENT);
         descText.setForeground(new Color(100, 100, 100));
 
+        // Adds a line as a separator
         JSeparator sep2 = new JSeparator();
         sep2.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
         sep2.setForeground(new Color(200, 200, 200));
@@ -146,6 +161,7 @@ public class ProductDetail extends JPanel {
         detailsGrid.add(makeDetailLabel("Sizes Available", true));
         detailsGrid.add(makeDetailLabel(sizes, false));
 
+        // Adds a line as a separator
         JSeparator sep3 = new JSeparator();
         sep3.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
         sep3.setForeground(new Color(200, 200, 200));
@@ -155,6 +171,7 @@ public class ProductDetail extends JPanel {
         qtyLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
         qtyLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+        // Allows to change quantity of the product
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(1, 1, 99, 1);
         JSpinner quantitySpinner = new JSpinner(spinnerModel);
         quantitySpinner.setFont(new Font("SansSerif", Font.PLAIN, 16));
@@ -173,7 +190,7 @@ public class ProductDetail extends JPanel {
         buyButton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         buyButton.setOpaque(true);
 
-        // Assemble
+        // Adding all elements to the info panel
         infoPanel.add(Box.createVerticalStrut(10));
         infoPanel.add(nameLabel);
         infoPanel.add(Box.createVerticalStrut(10));
@@ -202,7 +219,8 @@ public class ProductDetail extends JPanel {
         add(mainContent, BorderLayout.CENTER);
     }
 
-    private JLabel makeDetailLabel(String text, boolean isKey) {
+    // Makes the label for the details
+    public JLabel makeDetailLabel(String text, boolean isKey) {
         JLabel label = new JLabel(text);
         if (isKey) {
             label.setFont(new Font("SansSerif", Font.BOLD, 13));

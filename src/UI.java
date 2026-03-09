@@ -7,9 +7,9 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+// Creates UI
 public class UI extends JPanel {
-
-    CardLayout cardLayout = new CardLayout();
+    CardLayout cardLayout = new CardLayout(); // Allows to switch between pages
     JPanel pages = new JPanel(cardLayout);
     List<Products> productsList;
     JPanel ProductDisplay;
@@ -20,35 +20,42 @@ public class UI extends JPanel {
     JComboBox<String> materialComboBox;
     JComboBox<String> ratingComboBox;
 
-
     public UI() {
         setLayout(new BorderLayout());
 
+        // Creating panel for shopping page (where the shopping grid and filter panel are)
         JPanel shoppingPage = new JPanel();
         shoppingPage.setLayout(new BorderLayout());
         shoppingPage.setBackground(new Color(245, 241, 232));
 
+        // Create a panel for product grid
         ProductDisplay = new JPanel();
         ProductDisplay.setLayout(new FlowLayout(FlowLayout.LEFT, 25, 25));
         ProductDisplay.setBackground(new Color(245, 241, 232));
         ProductDisplay.setBorder(new EmptyBorder(20, 0, 20, 0));
 
+        // Loading product list
         productsList = Products.readProductCSV(getClass().getClassLoader());
 
-        // =========================
+        // ==========================
         // LANDING PAGE
-        // =========================
+        //===========================
+
+        // main panel for landing page
         JPanel title = new JPanel();
         title.setLayout(new BorderLayout());
 
+        // panel for images at the bottom
         JPanel bottomImages = new JPanel(new FlowLayout(FlowLayout.CENTER, 60, 40));
         bottomImages.setOpaque(false);
         bottomImages.setBorder(new EmptyBorder(30, 0, 60, 0));
 
+        // Getting the images
         ImageIcon iconA = new ImageIcon(getClass().getResource("/clothes/image1_title.jpg"));
         ImageIcon iconB = new ImageIcon(getClass().getResource("/clothes/image2_title.jpg"));
         ImageIcon iconC = new ImageIcon(getClass().getResource("/clothes/image3_title.jpg"));
 
+        // Adjusting images to the right size
         int cardImgSize = 240;
         JLabel img1 = new JLabel(new ImageIcon(scaleToFit(iconA.getImage(), cardImgSize, cardImgSize)));
         JLabel img2 = new JLabel(new ImageIcon(scaleToFit(iconB.getImage(), cardImgSize, cardImgSize)));
@@ -57,34 +64,41 @@ public class UI extends JPanel {
         img2.setHorizontalAlignment(JLabel.CENTER);
         img3.setHorizontalAlignment(JLabel.CENTER);
 
+        // Creating panel for first image
         JPanel card1 = new JPanel(new GridBagLayout());
         card1.setBackground(Color.WHITE);
         card1.setPreferredSize(new Dimension(260, 260));
         card1.setBorder(new LineBorder(new Color(220, 220, 220), 1, true));
         card1.add(img1);
 
+        // panel for second image
         JPanel card2 = new JPanel(new GridBagLayout());
         card2.setBackground(Color.WHITE);
         card2.setPreferredSize(new Dimension(260, 260));
         card2.setBorder(new LineBorder(new Color(220, 220, 220), 1, true));
         card2.add(img2);
 
+        // panel for third image
         JPanel card3 = new JPanel(new GridBagLayout());
         card3.setBackground(Color.WHITE);
         card3.setPreferredSize(new Dimension(260, 260));
         card3.setBorder(new LineBorder(new Color(220, 220, 220), 1, true));
         card3.add(img3);
 
+        // Adding images to bottom panel
         bottomImages.add(card1);
         bottomImages.add(card2);
         bottomImages.add(card3);
+        // Adding bottom panel to the main panel
         title.add(bottomImages, BorderLayout.SOUTH);
 
+        // Creating panel for title and start shopping button
         JPanel centerPanel = new JPanel();
         centerPanel.setOpaque(false);
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         centerPanel.setBorder(new EmptyBorder(80, 0, 20, 0));
 
+        // Creating title label
         JLabel titleLabel = new JLabel("Glamify Shopping");
         titleLabel.setFont(new Font("Serif", Font.BOLD, 70));
         titleLabel.setForeground(new Color(212, 175, 55));
@@ -93,6 +107,7 @@ public class UI extends JPanel {
         titleLabel.setBackground(new Color(0, 0, 0, 120));
         titleLabel.setBorder(new EmptyBorder(10, 20, 10, 20));
 
+        // Creating start shopping button
         JButton shoppingButton = new JButton("Start Shopping");
         shoppingButton.setBackground(new Color(212, 175, 55));
         shoppingButton.setForeground(Color.BLACK);
@@ -106,11 +121,14 @@ public class UI extends JPanel {
         // =========================
         // TOP NAVIGATION BAR
         // =========================
+
+        // Creating header panel
         JPanel header = new JPanel();
         header.setLayout(new BorderLayout());
         header.setBackground(new Color(13, 13, 13));
         header.setPreferredSize(new Dimension(0, 60));
 
+        // Adding Shopping cart to the header (right side)
         JLabel cart = new JLabel("🛒");
         JLabel companyName = new JLabel("\uD835\uDCD6\uD835\uDCF5\uD835\uDCEA\uD835\uDCF6\uD835\uDCF2\uD835\uDCEF\uD835\uDD02");
         cart.setFont(new Font("SansSerif", Font.PLAIN, 20));
@@ -121,6 +139,7 @@ public class UI extends JPanel {
         companyName.setBorder(new EmptyBorder(10, 20, 10, 20));
         header.add(cart, BorderLayout.EAST);
 
+        // Creating Home Button
         JButton homeButton = new JButton("ʜᴏᴍᴇ");
         homeButton.setFont(new Font("SansSerif", Font.BOLD, 16));
         homeButton.setForeground(Color.WHITE);
@@ -130,6 +149,7 @@ public class UI extends JPanel {
         homeButton.setOpaque(false);
         homeButton.addActionListener(e -> cardLayout.show(pages, "TITLE"));
 
+        // Adding Components to their respective panels
         centerPanel.add(titleLabel);
         centerPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         centerPanel.add(shoppingButton);
@@ -138,6 +158,8 @@ public class UI extends JPanel {
         // =========================
         // SHOPPING PAGE
         // =========================
+
+        // Creating Filter panel
         JPanel filterPanel = new JPanel();
         JScrollPane filterScroll = new JScrollPane(filterPanel);
         filterScroll.setPreferredSize(new Dimension(250, 0));
@@ -150,6 +172,7 @@ public class UI extends JPanel {
                 new EmptyBorder(12, 12, 12, 12)
         ));
 
+        // Title for Filter Panel
         JLabel filterTitle = new JLabel("ꜰɪʟᴛᴇʀ ᴘʀᴏᴅᴜᴄᴛꜱ");
         filterTitle.setFont(new Font("SansSerif", Font.BOLD, 20));
         filterTitle.setForeground(new Color(212, 175, 55));
@@ -219,11 +242,13 @@ public class UI extends JPanel {
         ratingComboBox.setBorder(new EmptyBorder(35, 35, 35, 35));
         ratingComboBox.addActionListener(e -> applyFilters());
 
+        // Adds each product to the product grid
         for (Products product : productsList) {
             JPanel productPanel = createProductPanel(product);
             ProductDisplay.add(wrap(productPanel));
         }
 
+        // Sets shopping page attributes
         ProductDisplay.setPreferredSize(new Dimension(700, 1200));
         JScrollPane scrollPane = new JScrollPane(ProductDisplay);
         shoppingPage.add(scrollPane, BorderLayout.CENTER);
@@ -231,10 +256,12 @@ public class UI extends JPanel {
         scrollPane.getViewport().setOpaque(false);
         scrollPane.setOpaque(false);
 
+        // Adding components to the pages
         shoppingPage.add(filterScroll, BorderLayout.WEST);
         pages.add(title, "TITLE");
         pages.add(shoppingPage, "SHOPPING");
 
+        // Creating panel for Company name and home button and adding them to it
         JPanel leftHeader = new JPanel(new FlowLayout(FlowLayout.LEFT, 7, 5));
         leftHeader.setOpaque(false);
         leftHeader.add(companyName);
@@ -249,6 +276,7 @@ public class UI extends JPanel {
     // PRODUCT CARD TEMPLATE
     // =========================
     public JPanel createProductPanel(Products products) {
+        // Creates a panel for product grid
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setPreferredSize(new Dimension(260, 340));
@@ -262,7 +290,7 @@ public class UI extends JPanel {
         );
         panel.setOpaque(true);
 
-        // Image
+        // Adjusting images for each product to the right size
         int boxW = 240;
         int boxH = 180;
         ImageIcon icon = new ImageIcon(getClass().getResource(products.getImagePath()));
@@ -279,7 +307,7 @@ public class UI extends JPanel {
         imageContainer.add(imageLabel);
         panel.add(imageContainer);
 
-        // Product name
+        // Product name Button --> Leads to Product Details
         JLabel productName = new JLabel(products.getName());
         productName.setFont(new Font("Segoe UI", Font.BOLD, 16));
         productName.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -295,7 +323,7 @@ public class UI extends JPanel {
         });
         panel.add(productName);
 
-        // Price
+        // Adding the Price
         JLabel price = new JLabel("$" + products.getPrice());
         price.setFont(new Font("Segoe UI", Font.BOLD, 20));
         price.setForeground(new Color(138, 28, 28));
@@ -303,7 +331,7 @@ public class UI extends JPanel {
         price.setBorder(new EmptyBorder(2, 0, 6, 0));
         panel.add(price);
 
-        // Star rating
+        // Adding the Star rating
         JLabel stars = new JLabel(buildStarString(products.getRating()) + "  " + products.getRating());
         stars.setFont(new Font("SansSerif", Font.PLAIN, 14));
         stars.setForeground(new Color(200, 150, 0));
@@ -323,7 +351,7 @@ public class UI extends JPanel {
     }
 
     // Builds a 5-star string supporting half stars (e.g. 4.5 → "★★★★½")
-    private String buildStarString(double rating) {
+    public String buildStarString(double rating) {
         StringBuilder sb = new StringBuilder();
         int full = (int) rating;
         boolean half = (rating - full) >= 0.5;
@@ -334,22 +362,27 @@ public class UI extends JPanel {
         return sb.toString();
     }
 
-    private JPanel wrap(JPanel card) {
+    // Wraps the cards so they have nice spacing
+    public JPanel wrap(JPanel card) {
         JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
         wrapper.setOpaque(false);
         wrapper.add(card);
         return wrapper;
     }
 
-    private Image scaleToFit(Image img, int maxW, int maxH) {
+    // Scales images to fit
+    public Image scaleToFit(Image img, int maxW, int maxH) {
         int w = img.getWidth(null);
         int h = img.getHeight(null);
         double scale = Math.min((double) maxW / w, (double) maxH / h);
         return img.getScaledInstance((int) (w * scale), (int) (h * scale), Image.SCALE_SMOOTH);
     }
+    // ========================
+    // FILTER HELPER METHODS
+    // ========================
 
-    // Filter helper methods
-    private void refreshProducts(List<Products> list) {
+    // Refreshes products
+    public void refreshProducts(List<Products> list) {
         ProductDisplay.removeAll();
         for (Products product : list) {
             JPanel productPanel = createProductPanel(product);
@@ -359,7 +392,8 @@ public class UI extends JPanel {
         ProductDisplay.repaint();
     }
 
-    private void applyFilters() {
+    // Applies filters based on what is selected
+    public void applyFilters() {
         List<Products> filtered = new ArrayList<>(productsList);
         String color = (String) colorComboBox.getSelectedItem();
         String size = (String) sizeComboBox.getSelectedItem();
