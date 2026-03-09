@@ -5,57 +5,53 @@ import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-// Creates UI
 public class UI extends JPanel {
-    CardLayout cardLayout = new CardLayout(); // Allows to switch between pages
+
+    CardLayout cardLayout = new CardLayout();
     JPanel pages = new JPanel(cardLayout);
     List<Products> productsList;
     JPanel ProductDisplay;
     Filter filter;
-    JComboBox<String> colorComboBox;
-    JComboBox<String> sizeComboBox;
-    JComboBox<String> categoryComboBox;
-    JComboBox<String> materialComboBox;
-    JComboBox<String> ratingComboBox;
+
+    // Active filter state
+    Set<String> activeColors     = new HashSet<>();
+    Set<String> activeSizes      = new HashSet<>();
+    Set<String> activeCategories = new HashSet<>();
+    Set<String> activeMaterials  = new HashSet<>();
+    double activeMinRating = 0.0;
 
     public UI() {
         setLayout(new BorderLayout());
 
-        // Creating panel for shopping page (where the shopping grid and filter panel are)
         JPanel shoppingPage = new JPanel();
         shoppingPage.setLayout(new BorderLayout());
         shoppingPage.setBackground(new Color(245, 241, 232));
 
-        // Create a panel for product grid
         ProductDisplay = new JPanel();
         ProductDisplay.setLayout(new FlowLayout(FlowLayout.LEFT, 25, 25));
         ProductDisplay.setBackground(new Color(245, 241, 232));
         ProductDisplay.setBorder(new EmptyBorder(20, 0, 20, 0));
 
-        // Loading product list
         productsList = Products.readProductCSV(getClass().getClassLoader());
 
-        // ==========================
+        // =========================
         // LANDING PAGE
-        //===========================
-
-        // main panel for landing page
+        // =========================
         JPanel title = new JPanel();
         title.setLayout(new BorderLayout());
 
-        // panel for images at the bottom
         JPanel bottomImages = new JPanel(new FlowLayout(FlowLayout.CENTER, 60, 40));
         bottomImages.setOpaque(false);
         bottomImages.setBorder(new EmptyBorder(30, 0, 60, 0));
 
-        // Getting the images
         ImageIcon iconA = new ImageIcon(getClass().getResource("/clothes/image1_title.jpg"));
         ImageIcon iconB = new ImageIcon(getClass().getResource("/clothes/image2_title.jpg"));
         ImageIcon iconC = new ImageIcon(getClass().getResource("/clothes/image3_title.jpg"));
 
-        // Adjusting images to the right size
         int cardImgSize = 240;
         JLabel img1 = new JLabel(new ImageIcon(scaleToFit(iconA.getImage(), cardImgSize, cardImgSize)));
         JLabel img2 = new JLabel(new ImageIcon(scaleToFit(iconB.getImage(), cardImgSize, cardImgSize)));
@@ -64,41 +60,34 @@ public class UI extends JPanel {
         img2.setHorizontalAlignment(JLabel.CENTER);
         img3.setHorizontalAlignment(JLabel.CENTER);
 
-        // Creating panel for first image
         JPanel card1 = new JPanel(new GridBagLayout());
         card1.setBackground(Color.WHITE);
         card1.setPreferredSize(new Dimension(260, 260));
         card1.setBorder(new LineBorder(new Color(220, 220, 220), 1, true));
         card1.add(img1);
 
-        // panel for second image
         JPanel card2 = new JPanel(new GridBagLayout());
         card2.setBackground(Color.WHITE);
         card2.setPreferredSize(new Dimension(260, 260));
         card2.setBorder(new LineBorder(new Color(220, 220, 220), 1, true));
         card2.add(img2);
 
-        // panel for third image
         JPanel card3 = new JPanel(new GridBagLayout());
         card3.setBackground(Color.WHITE);
         card3.setPreferredSize(new Dimension(260, 260));
         card3.setBorder(new LineBorder(new Color(220, 220, 220), 1, true));
         card3.add(img3);
 
-        // Adding images to bottom panel
         bottomImages.add(card1);
         bottomImages.add(card2);
         bottomImages.add(card3);
-        // Adding bottom panel to the main panel
         title.add(bottomImages, BorderLayout.SOUTH);
 
-        // Creating panel for title and start shopping button
         JPanel centerPanel = new JPanel();
         centerPanel.setOpaque(false);
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         centerPanel.setBorder(new EmptyBorder(80, 0, 20, 0));
 
-        // Creating title label
         JLabel titleLabel = new JLabel("Glamify Shopping");
         titleLabel.setFont(new Font("Serif", Font.BOLD, 70));
         titleLabel.setForeground(new Color(212, 175, 55));
@@ -107,7 +96,6 @@ public class UI extends JPanel {
         titleLabel.setBackground(new Color(0, 0, 0, 120));
         titleLabel.setBorder(new EmptyBorder(10, 20, 10, 20));
 
-        // Creating start shopping button
         JButton shoppingButton = new JButton("Start Shopping");
         shoppingButton.setBackground(new Color(212, 175, 55));
         shoppingButton.setForeground(Color.BLACK);
@@ -121,14 +109,11 @@ public class UI extends JPanel {
         // =========================
         // TOP NAVIGATION BAR
         // =========================
-
-        // Creating header panel
         JPanel header = new JPanel();
         header.setLayout(new BorderLayout());
         header.setBackground(new Color(13, 13, 13));
         header.setPreferredSize(new Dimension(0, 60));
 
-        // Adding Shopping cart to the header (right side)
         JLabel cart = new JLabel("🛒");
         JLabel companyName = new JLabel("\uD835\uDCD6\uD835\uDCF5\uD835\uDCEA\uD835\uDCF6\uD835\uDCF2\uD835\uDCEF\uD835\uDD02");
         cart.setFont(new Font("SansSerif", Font.PLAIN, 20));
@@ -139,7 +124,6 @@ public class UI extends JPanel {
         companyName.setBorder(new EmptyBorder(10, 20, 10, 20));
         header.add(cart, BorderLayout.EAST);
 
-        // Creating Home Button
         JButton homeButton = new JButton("ʜᴏᴍᴇ");
         homeButton.setFont(new Font("SansSerif", Font.BOLD, 16));
         homeButton.setForeground(Color.WHITE);
@@ -149,7 +133,6 @@ public class UI extends JPanel {
         homeButton.setOpaque(false);
         homeButton.addActionListener(e -> cardLayout.show(pages, "TITLE"));
 
-        // Adding Components to their respective panels
         centerPanel.add(titleLabel);
         centerPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         centerPanel.add(shoppingButton);
@@ -158,110 +141,77 @@ public class UI extends JPanel {
         // =========================
         // SHOPPING PAGE
         // =========================
-
-        // Creating Filter panel
-        JPanel filterPanel = new JPanel();
-        JScrollPane filterScroll = new JScrollPane(filterPanel);
-        filterScroll.setPreferredSize(new Dimension(250, 0));
-        filterScroll.setOpaque(false);
-        filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.Y_AXIS));
-        filterPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
-        filterPanel.setOpaque(false);
-        filterPanel.setBorder(BorderFactory.createCompoundBorder(
-                new MatteBorder(5, 0, 5, 0, new Color(255, 230, 120)), // soft yellow shadow
-                new EmptyBorder(12, 12, 12, 12)
-        ));
-
-        // Title for Filter Panel
-        JLabel filterTitle = new JLabel("ꜰɪʟᴛᴇʀ ᴘʀᴏᴅᴜᴄᴛꜱ");
-        filterTitle.setFont(new Font("SansSerif", Font.BOLD, 20));
-        filterTitle.setForeground(new Color(212, 175, 55));
-        filterTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-        filterPanel.add(filterTitle);
-        filterPanel.add(Box.createRigidArea(new Dimension(0, 25)));
-
         filter = new Filter(productsList);
 
-        // Color filter
-        JLabel colorLabel = new JLabel("Color");
-        colorLabel.setFont(new Font("SansSerif", Font.BOLD, 15));
-        colorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        String[] colors = {"All", "Grey", "Black", "White", "Cream", "Pink", "Blue", "Green", "Red", "Beige"};
-        colorComboBox = new JComboBox<>(colors);
-        colorComboBox.setPreferredSize(new Dimension(150, 75));
-        filterPanel.add(colorLabel);
-        filterPanel.add(colorComboBox);
-        colorComboBox.setBorder(new EmptyBorder(35, 35, 35, 35));
-        colorComboBox.addActionListener(e -> applyFilters());
+        JPanel filterPanel = new JPanel();
+        filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.Y_AXIS));
+        filterPanel.setBackground(Color.WHITE);
 
-        // Size filter
-        JLabel sizeLabel = new JLabel("Size");
-        sizeLabel.setFont(new Font("SansSerif", Font.BOLD, 15));
-        sizeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        String[] sizes = {"All", "Small", "Medium", "Large"};
-        sizeComboBox = new JComboBox<>(sizes);
-        sizeComboBox.setPreferredSize(new Dimension(150, 75));
-        filterPanel.add(sizeLabel);
-        filterPanel.add(sizeComboBox);
-        sizeComboBox.setBorder(new EmptyBorder(35, 35, 35, 35));
-        sizeComboBox.addActionListener(e -> applyFilters());
+        JScrollPane filterScroll = new JScrollPane(filterPanel);
+        filterScroll.setPreferredSize(new Dimension(260, 0));
+        filterScroll.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, new Color(220, 220, 220)));
+        filterScroll.getVerticalScrollBar().setUnitIncrement(12);
+        filterScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-        // Category filter
-        JLabel categoryLabel = new JLabel("Category");
-        categoryLabel.setFont(new Font("SansSerif", Font.BOLD, 15));
-        categoryLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        String[] categories = {"All", "Hoodie", "Shirt", "T-Shirt", "Sweater", "Dress", "Jacket", "Coat", "Blazer", "Track Suit"};
-        categoryComboBox = new JComboBox<>(categories);
-        categoryComboBox.setPreferredSize(new Dimension(150, 75));
-        filterPanel.add(categoryLabel);
-        filterPanel.add(categoryComboBox);
-        categoryComboBox.setBorder(new EmptyBorder(35, 35, 35, 35));
-        categoryComboBox.addActionListener(e -> applyFilters());
+        // "Filter" header row
+        JPanel optionsRow = buildSectionHeader("Filter", false, null, null);
+        filterPanel.add(optionsRow);
+        filterPanel.add(buildDivider());
 
-        // Material filter
-        JLabel materialLabel = new JLabel("Material");
-        materialLabel.setFont(new Font("SansSerif", Font.BOLD, 15));
-        materialLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        String[] materials = {"All", "Cotton", "Polyester", "Wool", "Acrylic", "Denim", "Chiffon", "Viscose"};
-        materialComboBox = new JComboBox<>(materials);
-        materialComboBox.setPreferredSize(new Dimension(150, 75));
-        filterPanel.add(materialLabel);
-        filterPanel.add(materialComboBox);
-        materialComboBox.setBorder(new EmptyBorder(35, 35, 35, 35));
-        materialComboBox.addActionListener(e -> applyFilters());
+        // SIZE section
+        String[] sizeOptions = {"Small", "Medium", "Large"};
+        JPanel sizeContent = buildCheckboxGrid(sizeOptions, activeSizes);
+        filterPanel.add(buildCollapsibleSection("Size", sizeContent, true));
+        filterPanel.add(buildDivider());
 
-        // Rating filter
-        JLabel ratingLabel = new JLabel("Rating");
-        ratingLabel.setFont(new Font("SansSerif", Font.BOLD, 15));
-        ratingLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        String[] ratings = {"All", "3+", "3.5+", "4+", "4.5+", "5+"};
-        ratingComboBox = new JComboBox<>(ratings);
-        ratingComboBox.setPreferredSize(new Dimension(150, 75));
-        filterPanel.add(ratingLabel);
-        filterPanel.add(ratingComboBox);
-        ratingComboBox.setBorder(new EmptyBorder(35, 35, 35, 35));
-        ratingComboBox.addActionListener(e -> applyFilters());
+        // COLOUR section
+        String[] colorOptions = {"Grey", "Black", "White", "Cream", "Pink", "Blue", "Red", "Beige"};
+        JPanel colorContent = buildCheckboxGrid(colorOptions, activeColors);
+        filterPanel.add(buildCollapsibleSection("Colour", colorContent, false));
+        filterPanel.add(buildDivider());
 
-        // Adds each product to the product grid
+        // CATEGORY section
+        String[] categoryOptions = {"Hoodie", "Shirt", "T-Shirt", "Sweater", "Dress", "Jacket", "Coat", "Blazer", "Track suit"};
+        JPanel categoryContent = buildCheckboxGrid(categoryOptions, activeCategories);
+        filterPanel.add(buildCollapsibleSection("Category", categoryContent, false));
+        filterPanel.add(buildDivider());
+
+        // MATERIAL section
+        String[] materialOptions = {"Cotton", "Polyester", "Wool", "Acrylic", "Denim", "Chiffon", "Viscose"};
+        JPanel materialContent = buildCheckboxGrid(materialOptions, activeMaterials);
+        filterPanel.add(buildCollapsibleSection("Material", materialContent, false));
+        filterPanel.add(buildDivider());
+
+        // PRICE / RATING section
+        String[] ratingOptions = {"3+", "3.5+", "4+", "4.5+", "5+"};
+        JPanel ratingContent = buildCheckboxGrid(ratingOptions, new HashSet<>());
+        // Rating uses single-select logic — wire each checkbox manually
+        JPanel ratingSection = buildCollapsibleSection("Price / Rating", ratingContent, false);
+        filterPanel.add(ratingSection);
+
+        // Wire up all checkboxes to the combined filter
+        wireCheckboxes(sizeContent,     activeSizes,      "size");
+        wireCheckboxes(colorContent,    activeColors,     "color");
+        wireCheckboxes(categoryContent, activeCategories, "category");
+        wireCheckboxes(materialContent, activeMaterials,  "material");
+        wireRatingCheckboxes(ratingContent);
+
         for (Products product : productsList) {
             JPanel productPanel = createProductPanel(product);
             ProductDisplay.add(wrap(productPanel));
         }
 
-        // Sets shopping page attributes
         ProductDisplay.setPreferredSize(new Dimension(700, 1200));
         JScrollPane scrollPane = new JScrollPane(ProductDisplay);
         shoppingPage.add(scrollPane, BorderLayout.CENTER);
-        shoppingPage.setOpaque(false);
+        shoppingPage.setOpaque(true);
         scrollPane.getViewport().setOpaque(false);
         scrollPane.setOpaque(false);
 
-        // Adding components to the pages
         shoppingPage.add(filterScroll, BorderLayout.WEST);
         pages.add(title, "TITLE");
         pages.add(shoppingPage, "SHOPPING");
 
-        // Creating panel for Company name and home button and adding them to it
         JPanel leftHeader = new JPanel(new FlowLayout(FlowLayout.LEFT, 7, 5));
         leftHeader.setOpaque(false);
         leftHeader.add(companyName);
@@ -276,7 +226,6 @@ public class UI extends JPanel {
     // PRODUCT CARD TEMPLATE
     // =========================
     public JPanel createProductPanel(Products products) {
-        // Creates a panel for product grid
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setPreferredSize(new Dimension(260, 340));
@@ -290,7 +239,7 @@ public class UI extends JPanel {
         );
         panel.setOpaque(true);
 
-        // Adjusting images for each product to the right size
+        // Image
         int boxW = 240;
         int boxH = 180;
         ImageIcon icon = new ImageIcon(getClass().getResource(products.getImagePath()));
@@ -307,7 +256,7 @@ public class UI extends JPanel {
         imageContainer.add(imageLabel);
         panel.add(imageContainer);
 
-        // Product name Button --> Leads to Product Details
+        // Product name
         JLabel productName = new JLabel(products.getName());
         productName.setFont(new Font("Segoe UI", Font.BOLD, 16));
         productName.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -323,7 +272,7 @@ public class UI extends JPanel {
         });
         panel.add(productName);
 
-        // Adding the Price
+        // Price
         JLabel price = new JLabel("$" + products.getPrice());
         price.setFont(new Font("Segoe UI", Font.BOLD, 20));
         price.setForeground(new Color(138, 28, 28));
@@ -331,7 +280,7 @@ public class UI extends JPanel {
         price.setBorder(new EmptyBorder(2, 0, 6, 0));
         panel.add(price);
 
-        // Adding the Star rating
+        // Star rating
         JLabel stars = new JLabel(buildStarString(products.getRating()) + "  " + products.getRating());
         stars.setFont(new Font("SansSerif", Font.PLAIN, 14));
         stars.setForeground(new Color(200, 150, 0));
@@ -351,7 +300,7 @@ public class UI extends JPanel {
     }
 
     // Builds a 5-star string supporting half stars (e.g. 4.5 → "★★★★½")
-    public String buildStarString(double rating) {
+    private String buildStarString(double rating) {
         StringBuilder sb = new StringBuilder();
         int full = (int) rating;
         boolean half = (rating - full) >= 0.5;
@@ -362,27 +311,21 @@ public class UI extends JPanel {
         return sb.toString();
     }
 
-    // Wraps the cards so they have nice spacing
-    public JPanel wrap(JPanel card) {
+    private JPanel wrap(JPanel card) {
         JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
         wrapper.setOpaque(false);
         wrapper.add(card);
         return wrapper;
     }
 
-    // Scales images to fit
-    public Image scaleToFit(Image img, int maxW, int maxH) {
+    private Image scaleToFit(Image img, int maxW, int maxH) {
         int w = img.getWidth(null);
         int h = img.getHeight(null);
         double scale = Math.min((double) maxW / w, (double) maxH / h);
         return img.getScaledInstance((int) (w * scale), (int) (h * scale), Image.SCALE_SMOOTH);
     }
-    // ========================
-    // FILTER HELPER METHODS
-    // ========================
 
-    // Refreshes products
-    public void refreshProducts(List<Products> list) {
+    private void refreshProducts(List<Products> list) {
         ProductDisplay.removeAll();
         for (Products product : list) {
             JPanel productPanel = createProductPanel(product);
@@ -392,30 +335,153 @@ public class UI extends JPanel {
         ProductDisplay.repaint();
     }
 
-    // Applies filters based on what is selected
-    public void applyFilters() {
-        List<Products> filtered = new ArrayList<>(productsList);
-        String color = (String) colorComboBox.getSelectedItem();
-        String size = (String) sizeComboBox.getSelectedItem();
-        String category = (String) categoryComboBox.getSelectedItem();
-        String material = (String) materialComboBox.getSelectedItem();
-        String rating = (String) ratingComboBox.getSelectedItem();
-        if (!color.equals("All")) {
-            filtered = new Filter(filtered).filterByColor(color);
+    // Applies all active filters together (AND logic)
+    private void applyAllFilters() {
+        List<Products> result = new ArrayList<>(productsList);
+
+        if (!activeColors.isEmpty()) {
+            result.removeIf(p -> {
+                for (String c : p.getColor().split(","))
+                    if (activeColors.contains(c.trim())) return false;
+                return true;
+            });
         }
-        if (!size.equals("All")) {
-            filtered = new Filter(filtered).filterBySize(size);
+        if (!activeSizes.isEmpty()) {
+            result.removeIf(p -> {
+                for (String s : p.getSize().split(","))
+                    if (activeSizes.contains(s.trim())) return false;
+                return true;
+            });
         }
-        if (!category.equals("All")) {
-            filtered = new Filter(filtered).filterByCategory(category);
+        if (!activeCategories.isEmpty()) {
+            result.removeIf(p -> !activeCategories.contains(p.getCategory().trim()));
         }
-        if (!material.equals("All")) {
-            filtered = new Filter(filtered).filterByMaterial(material);
+        if (!activeMaterials.isEmpty()) {
+            result.removeIf(p -> {
+                for (String m : p.getMaterial().split(","))
+                    if (activeMaterials.contains(m.trim())) return false;
+                return true;
+            });
         }
-        if (!rating.equals("All")) {
-            double ratingValue = Double.parseDouble(rating.replace("+", ""));
-            filtered = new Filter(filtered).filterByRating(ratingValue);
+        if (activeMinRating > 0.0) {
+            result.removeIf(p -> p.getRating() < activeMinRating);
         }
-        refreshProducts(filtered);
+
+        refreshProducts(result);
+    }
+
+    // Builds a collapsible section: header row that shows/hides the content panel
+    private JPanel buildCollapsibleSection(String title, JPanel content, boolean startExpanded) {
+        JPanel wrapper = new JPanel();
+        wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.Y_AXIS));
+        wrapper.setBackground(Color.WHITE);
+        wrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        boolean[] expanded = {startExpanded};
+        JLabel toggleLabel = new JLabel(startExpanded ? "−" : "+");
+        toggleLabel.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        toggleLabel.setForeground(new Color(150, 150, 150));
+
+        JPanel header = buildSectionHeader(title, startExpanded, content, toggleLabel);
+        content.setVisible(startExpanded);
+
+        header.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                expanded[0] = !expanded[0];
+                content.setVisible(expanded[0]);
+                toggleLabel.setText(expanded[0] ? "−" : "+");
+                wrapper.revalidate();
+                wrapper.repaint();
+            }
+            public void mouseEntered(MouseEvent e) { header.setCursor(new Cursor(Cursor.HAND_CURSOR)); }
+        });
+
+        wrapper.add(header);
+        wrapper.add(content);
+        return wrapper;
+    }
+
+    // Builds a section header row with title and +/− toggle
+    private JPanel buildSectionHeader(String title, boolean expanded, JPanel content, JLabel toggleLabel) {
+        JPanel header = new JPanel(new BorderLayout());
+        header.setBackground(Color.WHITE);
+        header.setMaximumSize(new Dimension(Integer.MAX_VALUE, 52));
+        header.setBorder(new EmptyBorder(14, 20, 14, 20));
+
+        JLabel titleLabel = new JLabel(title);
+        boolean isOptions = title.equals("Options");
+        titleLabel.setFont(new Font("SansSerif", isOptions ? Font.PLAIN : Font.BOLD, 15));
+        titleLabel.setForeground(new Color(30, 30, 30));
+
+        header.add(titleLabel, BorderLayout.WEST);
+        if (toggleLabel != null) header.add(toggleLabel, BorderLayout.EAST);
+
+        return header;
+    }
+
+    // Builds a 2-column grid of checkboxes from the given options, centered in the panel
+    private JPanel buildCheckboxGrid(String[] options, Set<String> activeSet) {
+        JPanel grid = new JPanel(new GridLayout(0, 2, 0, 0));
+        grid.setBackground(Color.WHITE);
+
+        for (String opt : options) {
+            JCheckBox cb = new JCheckBox(opt);
+            cb.setFont(new Font("SansSerif", Font.PLAIN, 14));
+            cb.setForeground(new Color(40, 40, 40));
+            cb.setBackground(Color.WHITE);
+            cb.setFocusPainted(false);
+            cb.setBorder(new EmptyBorder(6, 8, 6, 8));
+            grid.add(cb);
+        }
+
+        // Wrap in a centering panel
+        JPanel centered = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        centered.setBackground(Color.WHITE);
+        centered.setBorder(new EmptyBorder(6, 0, 12, 0));
+        centered.add(grid);
+        return centered;
+    }
+
+    // Wires checkboxes in a grid panel to a Set and triggers combined filter on change
+    private void wireCheckboxes(JPanel centeredWrapper, Set<String> activeSet, String filterType) {
+        JPanel grid = (JPanel) centeredWrapper.getComponent(0);
+        for (Component comp : grid.getComponents()) {
+            if (comp instanceof JCheckBox cb) {
+                cb.addActionListener(e -> {
+                    if (cb.isSelected()) activeSet.add(cb.getText());
+                    else activeSet.remove(cb.getText());
+                    applyAllFilters();
+                });
+            }
+        }
+    }
+
+    // Wires rating checkboxes as single-select (radio-like behaviour)
+    private void wireRatingCheckboxes(JPanel centeredWrapper) {
+        JPanel grid = (JPanel) centeredWrapper.getComponent(0);
+        List<JCheckBox> boxes = new ArrayList<>();
+        for (Component comp : grid.getComponents()) {
+            if (comp instanceof JCheckBox cb) boxes.add(cb);
+        }
+        for (JCheckBox cb : boxes) {
+            cb.addActionListener(e -> {
+                if (cb.isSelected()) {
+                    activeMinRating = Double.parseDouble(cb.getText().replace("+", ""));
+                    for (JCheckBox other : boxes) if (other != cb) other.setSelected(false);
+                } else {
+                    activeMinRating = 0.0;
+                }
+                applyAllFilters();
+            });
+        }
+    }
+
+    // Thin horizontal divider line
+    private JPanel buildDivider() {
+        JPanel div = new JPanel();
+        div.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+        div.setPreferredSize(new Dimension(0, 1));
+        div.setBackground(new Color(220, 220, 220));
+        return div;
     }
 }
