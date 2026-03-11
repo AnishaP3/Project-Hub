@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
@@ -11,7 +10,7 @@ import java.util.Set;
 
 public class UI extends JPanel {
 
-    CardLayout cardLayout = new CardLayout();
+    CardLayout cardLayout = new CardLayout(); // Allows to switch between pages
     JPanel pages = new JPanel(cardLayout);
     List<Products> productsList;
     JPanel ProductDisplay;
@@ -178,7 +177,7 @@ public class UI extends JPanel {
         filterScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         // "Filter" header row
-        JPanel optionsRow = buildSectionHeader("Filters", false, null, null);
+        JPanel optionsRow = buildSectionHeader("Filter", false, null, null);
         filterPanel.add(optionsRow);
         filterPanel.add(buildDivider());
 
@@ -335,9 +334,15 @@ public class UI extends JPanel {
         int full = (int) rating;
         boolean half = (rating - full) >= 0.5;
         int empty = 5 - full - (half ? 1 : 0);
-        for (int i = 0; i < full; i++)  sb.append("★");
-        if (half)                        sb.append("½");
-        for (int i = 0; i < empty; i++) sb.append("☆");
+        for (int i = 0; i < full; i++) {
+            sb.append("★");
+        }
+        if (half) {
+            sb.append("½");
+        }
+        for (int i = 0; i < empty; i++){
+            sb.append("☆");
+        }
         return sb.toString();
     }
 
@@ -372,38 +377,15 @@ public class UI extends JPanel {
     // FILTER HELPER METHODS
     // ========================
 
-    // Applies all active filters together (AND logic)
+    // Delegates all active filters to the Filter object (AND logic)
     public void applyAllFilters() {
-        List<Products> result = new ArrayList<>(productsList);
-
-        if (!activeColors.isEmpty()) {
-            result.removeIf(p -> {
-                for (String c : p.getColor().split(","))
-                    if (activeColors.contains(c.trim())) return false;
-                return true;
-            });
-        }
-        if (!activeSizes.isEmpty()) {
-            result.removeIf(p -> {
-                for (String s : p.getSize().split(","))
-                    if (activeSizes.contains(s.trim())) return false;
-                return true;
-            });
-        }
-        if (!activeCategories.isEmpty()) {
-            result.removeIf(p -> !activeCategories.contains(p.getCategory().trim()));
-        }
-        if (!activeMaterials.isEmpty()) {
-            result.removeIf(p -> {
-                for (String m : p.getMaterial().split(","))
-                    if (activeMaterials.contains(m.trim())) return false;
-                return true;
-            });
-        }
-        if (activeMinRating > 0.0) {
-            result.removeIf(p -> p.getRating() < activeMinRating);
-        }
-
+        List<Products> result = filter.applyFilters(
+                activeColors,
+                activeSizes,
+                activeCategories,
+                activeMaterials,
+                activeMinRating
+        );
         refreshProducts(result);
     }
 
@@ -450,16 +432,7 @@ public class UI extends JPanel {
         titleLabel.setFont(new Font("SansSerif", isOptions ? Font.PLAIN : Font.BOLD, 15));
         titleLabel.setForeground(new Color(30, 30, 30));
 
-        if (title.equals("Filters")) {
-            titleLabel.setFont(new Font("Serif", Font.BOLD, 20));
-            titleLabel.setForeground(new Color(212, 175, 55));
-            titleLabel.setHorizontalAlignment(JLabel.CENTER);
-            header.add(titleLabel, BorderLayout.CENTER);
-        } else {
-            titleLabel.setFont(new Font("SansSerif", Font.BOLD, 15));
-            titleLabel.setForeground(new Color(30, 30, 30));
-            header.add(titleLabel, BorderLayout.CENTER);
-        }
+        header.add(titleLabel, BorderLayout.WEST);
         if (toggleLabel != null) header.add(toggleLabel, BorderLayout.EAST);
 
         return header;
@@ -469,7 +442,6 @@ public class UI extends JPanel {
     public JPanel buildCheckboxGrid(String[] options, Set<String> activeSet) {
         JPanel grid = new JPanel(new GridLayout(0, 2, 0, 0));
         grid.setBackground(Color.WHITE);
-        grid.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         for (String opt : options) {
             JCheckBox cb = new JCheckBox(opt);
@@ -477,15 +449,15 @@ public class UI extends JPanel {
             cb.setForeground(new Color(40, 40, 40));
             cb.setBackground(Color.WHITE);
             cb.setFocusPainted(false);
-            cb.setBorder(new EmptyBorder(6, 0, 6, 8));
+            cb.setBorder(new EmptyBorder(6, 8, 6, 8));
             grid.add(cb);
         }
 
         // Wrap in a centering panel
-        JPanel centered = new JPanel(new BorderLayout());
+        JPanel centered = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
         centered.setBackground(Color.WHITE);
-        centered.setBorder(new EmptyBorder(4, 0, 12, 0));
-        centered.add(grid, BorderLayout.NORTH);
+        centered.setBorder(new EmptyBorder(6, 0, 12, 0));
+        centered.add(grid);
         return centered;
     }
 
