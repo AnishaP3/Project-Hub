@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class Filter {
     List<Products> products = new ArrayList<>();
@@ -10,41 +9,70 @@ public class Filter {
         this.products = products;
     }
 
-    public List<Products> applyFilters(Set<String> colors,
-                                       Set<String> sizes,
-                                       Set<String> categories,
-                                       Set<String> materials,
-                                       double minRating) {
-        List<Products> result = new ArrayList<>(products);
+    // Filters products by category
+    public List<Products> filterByCategory(String category) {
+        List<Products> filtered = new ArrayList<>();
+        for (Products p : products) {
+            if (p.getCategory().equalsIgnoreCase(category)) {
+                filtered.add(p);
+            }
+        }
+        return filtered;
+    }
 
-        if (!colors.isEmpty()) {
-            result.removeIf(p -> {
-                for (String c : p.getColor().split(","))
-                    if (colors.contains(c.trim())) return false;
-                return true;
-            });
+    // Filters products by product
+    public List<Products> filterByColor(String color) {
+        List<Products> filtered = new ArrayList<>();
+        for (Products p : products) {
+            String[] colors = p.getColor().split(",");
+            for (String c : colors) {
+                if (c.trim().equalsIgnoreCase(color)) {
+                    filtered.add(p);
+                    break;
+                }
+            }
         }
-        if (!sizes.isEmpty()) {
-            result.removeIf(p -> {
-                for (String s : p.getSize().split(","))
-                    if (sizes.contains(s.trim())) return false;
-                return true;
-            });
-        }
-        if (!categories.isEmpty()) {
-            result.removeIf(p -> !categories.contains(p.getCategory().trim()));
-        }
-        if (!materials.isEmpty()) {
-            result.removeIf(p -> {
-                for (String m : p.getMaterial().split(","))
-                    if (materials.contains(m.trim())) return false;
-                return true;
-            });
-        }
-        if (minRating > 0.0) {
-            result.removeIf(p -> p.getRating() < minRating);
-        }
+        return filtered;
+    }
 
-        return result;
+    // Filters Products by Material
+    public List<Products> filterByMaterial(String material) {
+        List<Products> filtered = new ArrayList<>();
+        for (Products p : products) {
+            String[] materials = p.getMaterial().split(",");
+            for (String m : materials) {
+                if (m.trim().equalsIgnoreCase(material)) {
+                    filtered.add(p);
+                    break;
+                }
+            }
+        }
+        return filtered;
+    }
+
+    // Filters Products by Size
+    public List<Products> filterBySize(String size) {
+        List<Products> filtered = new ArrayList<>();
+        for (Products p : products) {
+            String[] sizes = p.getSize().split(",");
+            for (String s : sizes) {
+                if (s.trim().equalsIgnoreCase(size)) {
+                    filtered.add(p);
+                    break;
+                }
+            }
+        }
+        return filtered;
+    }
+
+    // Filters Products by Rating
+    public List<Products> filterByRating(double rating) {
+        List<Products> filtered = new ArrayList<>();
+        for (Products p : products) {
+            if (p.getRating() >= rating) {
+                filtered.add(p);
+            }
+        }
+        return filtered;
     }
 }
