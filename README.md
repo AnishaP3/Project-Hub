@@ -6,9 +6,9 @@
 
 The project is an e-commerce clothing platform that allows users to browse products,
 view details, add products to cart and complete purchases. A key feature of the site
-is its personalized recommendation system that uses the results of a user's personality
-assessment to recommend clothing. The website will also highlight trending items and display
-frequently bought together suggestions to help users build an outfit and discover new styles.
+is the personalized recommendation system that uses the results of a user's personality
+assessment to recommend clothing. The website will also highlight trending items and display 
+suggestions of frequently bought together items to help users build an outfit and discover new styles.
 Overall, the purpose is to provide an engaging platform that helps users find clothing
 that fits their personality.
 
