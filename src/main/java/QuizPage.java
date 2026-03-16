@@ -7,19 +7,20 @@ import java.util.Map;
 
 public class QuizPage extends JPanel {
     private final CardLayout cardLayout;
-    private final String[] questions = {"Question 1",
-            "Question 2",
-            "Question 3",
-            "Question 4",
-            "Question 5",
-            "Question 6"};
+    private final String[] questions =
+            {"Lifestyle?",
+            "Colour Prefrences?",
+            "Tones?",
+            "Budget Range?",
+            "Prefered Style?",
+            "Fabric Prefrences?"};
     private final String[][] options = {
-            {"Option 1", "Option 2", "Option 3"},
-            {"Option 1", "Option 2", "Option 3"},
-            {"Option 1", "Option 2", "Option 3"},
-            {"Option 1", "Option 2", "Option 3"},
-            {"Option 1", "Option 2", "Option 3"},
-            {"Option 1", "Option 2", "Option 3"}
+            {"Sporty", "Business", "Artsy"},
+            {"Red", "Orange", "Yellow", "Green", "Blue", "Purple"},
+            {"Bright", "Monotone", "Uniform"},
+            {"0-20", "20-50", "50-80", "80+"},
+            {"Grunge", "Minimalistic", "Streetwear", "Formal"},
+            {"Cotton", "Satin", "Polyester"}
     };
     private Map<String, String> quizAnswers;
 
