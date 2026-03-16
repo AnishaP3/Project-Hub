@@ -2,6 +2,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -142,15 +143,10 @@ public class UI extends JPanel {
         companyName.setBorder(new EmptyBorder(10, 20, 10, 20));
         header.add(cart, BorderLayout.EAST);
 
-        // Creating Home Button
-        JButton homeButton = new JButton("ʜᴏᴍᴇ");
-        homeButton.setFont(new Font("SansSerif", Font.BOLD, 16));
-        homeButton.setForeground(Color.WHITE);
-        homeButton.setBackground(new Color(0, 0, 0, 0));
-        homeButton.setBorder(new EmptyBorder(5, 15, 5, 15));
-        homeButton.setFocusPainted(false);
-        homeButton.setOpaque(false);
-        homeButton.addActionListener(e -> cardLayout.show(pages, "TITLE"));
+        //making the menu buttons
+        JButton homeButton = createMenuButton("ʜᴏᴍᴇ", e -> cardLayout.show(pages, "TITLE"));
+        JButton shoppingMenuButton = createMenuButton("ᴘʀᴏᴅᴜᴄᴛs", e -> cardLayout.show(pages, "SHOPPING"));
+        JButton quizButton = createMenuButton("ǫᴜɪᴢ", e -> cardLayout.show(pages, "TITLE"));
 
         // Adding Components to their respective panels
         centerPanel.add(titleLabel);
@@ -242,7 +238,12 @@ public class UI extends JPanel {
         JPanel leftHeader = new JPanel(new FlowLayout(FlowLayout.LEFT, 7, 5));
         leftHeader.setOpaque(false);
         leftHeader.add(companyName);
+
+        //menu buttons
         leftHeader.add(homeButton);
+        leftHeader.add(shoppingMenuButton);
+        leftHeader.add(quizButton);
+
         header.add(leftHeader, BorderLayout.WEST);
         add(header, BorderLayout.NORTH);
         add(pages, BorderLayout.CENTER);
@@ -502,5 +503,22 @@ public class UI extends JPanel {
         div.setPreferredSize(new Dimension(0, 1));
         div.setBackground(new Color(220, 220, 220));
         return div;
+    }
+
+    // ----------------------
+    // Iteration 2 helper functions
+    // ----------------------
+
+    //This function helps make menu buttons
+    public static JButton createMenuButton(String text, ActionListener actionListener) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("SansSerif", Font.BOLD, 16));
+        button.setForeground(Color.WHITE);
+        button.setBackground(new Color(0, 0, 0, 0)); // transparent
+        button.setBorder(new EmptyBorder(5, 15, 5, 15));
+        button.setFocusPainted(false);
+        button.setOpaque(false);
+        button.addActionListener(actionListener);
+        return button;
     }
 }

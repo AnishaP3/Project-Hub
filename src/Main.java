@@ -9,6 +9,5 @@ public class Main {
         frame.setSize(800, 600);
         frame.add(new UI());
         frame.setVisible(true);
-        
     }
 }
