@@ -53,7 +53,7 @@ public class Products {
     public static List<Products> readProductCSV(ClassLoader classLoader) {
         List<Products> products = new ArrayList<>();
 
-        try (InputStream inputStream = classLoader.getResourceAsStream("csv/products.csv")) {
+        try (InputStream inputStream = classLoader.getResourceAsStream("Products/products.csv")) {
             if (inputStream == null) {
                 throw new RuntimeException("CSV file not found in resources folder.");
             }

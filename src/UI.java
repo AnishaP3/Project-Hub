@@ -143,11 +143,6 @@ public class UI extends JPanel {
         companyName.setBorder(new EmptyBorder(10, 20, 10, 20));
         header.add(cart, BorderLayout.EAST);
 
-        //making the menu buttons
-        JButton homeButton = createMenuButton("ʜᴏᴍᴇ", e -> cardLayout.show(pages, "TITLE"));
-        JButton shoppingMenuButton = createMenuButton("ᴘʀᴏᴅᴜᴄᴛs", e -> cardLayout.show(pages, "SHOPPING"));
-        JButton quizButton = createMenuButton("ǫᴜɪᴢ", e -> cardLayout.show(pages, "TITLE"));
-
         // Adding Components to their respective panels
         centerPanel.add(titleLabel);
         centerPanel.add(Box.createRigidArea(new Dimension(0, 20)));
@@ -233,6 +228,15 @@ public class UI extends JPanel {
         shoppingPage.add(filterScroll, BorderLayout.WEST);
         pages.add(title, "TITLE");
         pages.add(shoppingPage, "SHOPPING");
+
+        //Making the Quiz page:
+        QuizPage quiz = new QuizPage(cardLayout);
+        pages.add(quiz, "QUIZ");
+
+        //making the menu buttons
+        JButton homeButton = createMenuButton("ʜᴏᴍᴇ", e -> cardLayout.show(pages, "TITLE"));
+        JButton shoppingMenuButton = createMenuButton("ᴘʀᴏᴅᴜᴄᴛs", e -> cardLayout.show(pages, "SHOPPING"));
+        JButton quizButton = createMenuButton("ǫᴜɪᴢ", e -> cardLayout.show(pages, "QUIZ"));
 
         // Creating panel for Company name and home button and adding them to it
         JPanel leftHeader = new JPanel(new FlowLayout(FlowLayout.LEFT, 7, 5));
