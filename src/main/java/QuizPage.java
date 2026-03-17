@@ -9,11 +9,11 @@ public class QuizPage extends JPanel {
     private final CardLayout cardLayout;
     private final String[] questions =
             {"Lifestyle?",
-            "Colour Prefrences?",
+            "Colour Preferences?",
             "Tones?",
             "Budget Range?",
-            "Prefered Style?",
-            "Fabric Prefrences?"};
+            "Preferred Style?",
+            "Fabric Preferences?"};
     private final String[][] options = {
             {"Sporty", "Business", "Artsy"},
             {"Red", "Orange", "Yellow", "Green", "Blue", "Purple"},
