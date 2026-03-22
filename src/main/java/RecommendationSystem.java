@@ -17,6 +17,7 @@ public class RecommendationSystem {
 
         for (Products p : allProducts) {
             int points = 0;
+            int answeredQuestions = 0;
 
             // Recommendations based on lifestyle
             if (!lifestyle.isEmpty()) {
@@ -33,6 +34,7 @@ public class RecommendationSystem {
                         p.getCategory().equalsIgnoreCase("T-Shirt") || p.getCategory().equalsIgnoreCase("Dress") || p.getCategory().equalsIgnoreCase("Jacket"))) {
                     points += 3;
                 }
+                answeredQuestions ++;
             }
 
             // Recommendations based on colour
@@ -43,6 +45,7 @@ public class RecommendationSystem {
                         break;
                     }
                 }
+                answeredQuestions ++;
             }
 
             // Recommendations based on Tone
@@ -52,8 +55,8 @@ public class RecommendationSystem {
                     points += 2;
                 }
 
-                if (tone.equalsIgnoreCase("Monotone") && (p.getCategory().equalsIgnoreCase("Jacket") && p.getName().equalsIgnoreCase("Jacket")) ||
-                        (p.getCategory().equalsIgnoreCase("Coat") ||
+                if (tone.equalsIgnoreCase("Monotone") && ((p.getCategory().equalsIgnoreCase("Jacket") && p.getName().equalsIgnoreCase("Jacket")) ||
+                        p.getCategory().equalsIgnoreCase("Coat") ||
                         p.getCategory().equalsIgnoreCase("Blazer"))) {
                     points += 2;
                 }
@@ -62,12 +65,16 @@ public class RecommendationSystem {
                         p.getCategory().equalsIgnoreCase("Shirt"))) {
                     points += 2;
                 }
+                answeredQuestions ++;
             }
 
             // Recommendations based on budget
             double[] br = budgetRange(budget);
-            if (p.getPrice() >= br[0] && p.getPrice() <= br[1]) {
-                points += 2;
+            if (!budget.isEmpty()) {
+                if (p.getPrice() >= br[0] && p.getPrice() <= br[1]) {
+                    points += 2;
+                }
+                answeredQuestions ++;
             }
 
             // Recommendations based on style
@@ -86,6 +93,7 @@ public class RecommendationSystem {
                         p.getCategory().equalsIgnoreCase("Blazer"))) {
                     points += 2;
                 }
+                answeredQuestions ++;
             }
 
             // Recommendations based on fabric
@@ -96,9 +104,17 @@ public class RecommendationSystem {
                         break;
                     }
                 }
+                answeredQuestions ++;
             }
 
-            if (points >= 4) recommendations.add(p);
+            int threshold;
+            if (answeredQuestions <= 3) {
+                threshold = 2;
+            } else {
+                threshold = 4;
+            }
+
+            if (points >= threshold) recommendations.add(p);
         }
 
         // Remove duplicates
