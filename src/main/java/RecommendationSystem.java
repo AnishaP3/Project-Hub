@@ -1,9 +1,12 @@
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class RecommendationSystem {
+
+    // RECOMMENDS PRODUCTS BASED ON QUIZ RESULTS
     public List<Products> recommendProducts(ClassLoader classLoader) {
         List<String> answers = readQuizResultsCSV(classLoader);
         List<Products> recommendations = new ArrayList<>();
@@ -13,7 +16,7 @@ public class RecommendationSystem {
         String tone = answers.get(2);
         String budget = answers.get(3);
         String style = answers.get(4);
-        String fabric =  answers.get(5);
+        String fabric = answers.get(5);
 
         for (Products p : allProducts) {
             int points = 0;
@@ -21,8 +24,8 @@ public class RecommendationSystem {
 
             // Recommendations based on lifestyle
             if (!lifestyle.isEmpty()) {
-                if(lifestyle.equalsIgnoreCase("Sporty") && (p.getCategory().equalsIgnoreCase("Track Suit") ||
-                        p.getCategory().equalsIgnoreCase("Hoodie") || p.getCategory().equalsIgnoreCase("T-Shirt"))){
+                if (lifestyle.equalsIgnoreCase("Sporty") && (p.getCategory().equalsIgnoreCase("Track Suit") ||
+                        p.getCategory().equalsIgnoreCase("Hoodie") || p.getCategory().equalsIgnoreCase("T-Shirt"))) {
                     points += 3;
                 }
                 if (lifestyle.equalsIgnoreCase("Business") && ((p.getCategory().equalsIgnoreCase("Blazer")) ||
@@ -34,7 +37,7 @@ public class RecommendationSystem {
                         p.getCategory().equalsIgnoreCase("T-Shirt") || p.getCategory().equalsIgnoreCase("Dress") || p.getCategory().equalsIgnoreCase("Jacket"))) {
                     points += 3;
                 }
-                answeredQuestions ++;
+                answeredQuestions++;
             }
 
             // Recommendations based on colour
@@ -45,7 +48,7 @@ public class RecommendationSystem {
                         break;
                     }
                 }
-                answeredQuestions ++;
+                answeredQuestions++;
             }
 
             // Recommendations based on Tone
@@ -65,7 +68,7 @@ public class RecommendationSystem {
                         p.getCategory().equalsIgnoreCase("Shirt"))) {
                     points += 2;
                 }
-                answeredQuestions ++;
+                answeredQuestions++;
             }
 
             // Recommendations based on budget
@@ -74,7 +77,7 @@ public class RecommendationSystem {
                 if (p.getPrice() >= br[0] && p.getPrice() <= br[1]) {
                     points += 2;
                 }
-                answeredQuestions ++;
+                answeredQuestions++;
             }
 
             // Recommendations based on style
@@ -93,7 +96,7 @@ public class RecommendationSystem {
                         p.getCategory().equalsIgnoreCase("Blazer"))) {
                     points += 2;
                 }
-                answeredQuestions ++;
+                answeredQuestions++;
             }
 
             // Recommendations based on fabric
@@ -104,7 +107,7 @@ public class RecommendationSystem {
                         break;
                     }
                 }
-                answeredQuestions ++;
+                answeredQuestions++;
             }
 
             int threshold;
@@ -113,7 +116,6 @@ public class RecommendationSystem {
             } else {
                 threshold = 4;
             }
-
             if (points >= threshold) recommendations.add(p);
         }
 
@@ -125,9 +127,9 @@ public class RecommendationSystem {
             }
         }
         return uniqueRecommendations;
-
     }
 
+    // READS THE QUIZ RESULTS FROM THE CSV
     public List<String> readQuizResultsCSV(ClassLoader classLoader) {
         List<String> quizResults = new ArrayList<>();
         File file = new File("resources/Quiz/quizResults.csv");
@@ -172,14 +174,20 @@ public class RecommendationSystem {
         return quizResults;
     }
 
+
+    // RETURNS THE BUDGET AS AN ARRAY
     public double[] budgetRange(String budget) {
         switch (budget) {
-            case "0-20" : return new double[] {0, 20};
-            case "20-50" : return new double[] {20, 50};
-            case "50-80" : return new double[] {50, 80};
-            case "80+" : return new double[] {80, Double.MAX_VALUE};
-            default : return new double[] {0, Double.MAX_VALUE};
+            case "0-20":
+                return new double[]{0, 20};
+            case "20-50":
+                return new double[]{20, 50};
+            case "50-80":
+                return new double[]{50, 80};
+            case "80+":
+                return new double[]{80, Double.MAX_VALUE};
+            default:
+                return new double[]{0, Double.MAX_VALUE};
         }
     }
 }
-

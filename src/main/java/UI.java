@@ -472,7 +472,7 @@ public class UI extends JPanel {
         JPanel centered = new JPanel(new BorderLayout());
         centered.setBackground(Color.WHITE);
         centered.setBorder(new EmptyBorder(4, 0, 12, 0));
-        centered.add(grid,  BorderLayout.NORTH);
+        centered.add(grid, BorderLayout.NORTH);
         return centered;
     }
 
