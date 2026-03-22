@@ -6,31 +6,34 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class QuizPage extends JPanel {
+    private final RecommendationPage recPage;
     private final CardLayout cardLayout;
+    private JPanel pages;
     private final String[] questions =
             {"Lifestyle?",
-            "Colour Prefrences?",
+            "Colour Preferences?",
             "Tones?",
             "Budget Range?",
-            "Prefered Style?",
-            "Fabric Prefrences?"};
+            "Preferred Style?",
+            "Fabric Preferences?"};
     private final String[][] options = {
             {"Sporty", "Business", "Artsy"},
-            {"Red", "Orange", "Yellow", "Green", "Blue", "Purple"},
+            {"Red", "Pink", "Black", "Grey", "Blue", "Cream", "White", "Beige"},
             {"Bright", "Monotone", "Uniform"},
             {"0-20", "20-50", "50-80", "80+"},
-            {"Grunge", "Minimalistic", "Streetwear", "Formal"},
-            {"Cotton", "Satin", "Polyester"}
+            {"Minimalistic", "Streetwear", "Formal"},
+            {"Cotton", "Wool", "Polyester", "Denim", "Chiffon"}
     };
     private Map<String, String> quizAnswers;
 
-    QuizPage(CardLayout cardLayout) {
+    QuizPage(CardLayout cardLayout, JPanel pages, RecommendationPage recPage) {
         this.cardLayout = cardLayout;
-        quizAnswers = new HashMap<String, String>();
+        this.pages = pages;
+        this.recPage = recPage;
         setUpQuiz();
     }
 
-    //function writes into the quisResults.csv file (in resource/Quiz)
+    //function writes into the quizResults.csv file (in resource/Quiz)
     public static void writeQuizResult(String[] dataRow) {
         try (FileWriter writer = new FileWriter("resources/Quiz/quizResults.csv", true)) { // append = true
             writer.append(String.join(",", dataRow));
@@ -44,14 +47,14 @@ public class QuizPage extends JPanel {
     }
 
     public void setUpQuiz() {
-        setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        setLayout(new BorderLayout());
+        quizAnswers = new HashMap<>();
 
         //main panel
         JPanel mainContent = new JPanel();
         mainContent.setLayout(new BoxLayout(mainContent, BoxLayout.Y_AXIS));
-
         mainContent.setBackground(new Color(245, 241, 232));
-        mainContent.setBorder(new EmptyBorder(0, 0, 0, 0));
+        mainContent.setBorder(new EmptyBorder(20, 20, 20, 20));
         mainContent.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         for (int i = 0; i < questions.length; i++) {
@@ -84,20 +87,41 @@ public class QuizPage extends JPanel {
         }
 
         //Making the finished quiz button, adds information into csv file
-        quizAnswers = new HashMap<>();
         JButton finishedQuizButton = new JButton("Finish Quiz");
+        finishedQuizButton.setBackground(new Color(212, 175, 55));
+        finishedQuizButton.setForeground(Color.BLACK);
+        finishedQuizButton.setFont(new Font("SansSerif", Font.BOLD, 12));
+        finishedQuizButton.setOpaque(true);
+        finishedQuizButton.setPreferredSize(new Dimension(120, 25));
+        finishedQuizButton.setFocusPainted(false);
         finishedQuizButton.addActionListener(e -> {
             String[] answers = new String[questions.length];
             for (int i = 0; i < questions.length; i++) {
-                answers[i] = quizAnswers.getOrDefault(questions[i], null); //If no answer is clicked, empty
+                answers[i] = quizAnswers.getOrDefault(questions[i], ""); //If no answer is clicked, empty
             }
             writeQuizResult(answers);
+            recPage.refresh();
+            cardLayout.show(pages, "RECOMMENDATIONS");
         });
 
+        // scroll pane
+        JScrollPane quizScroll = new JScrollPane(mainContent);
+        quizScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        quizScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        quizScroll.getVerticalScrollBar().setUnitIncrement(12);
+        quizScroll.setBorder(null);
+        add(quizScroll, BorderLayout.CENTER);
 
-        //adding to page:
-        add(finishedQuizButton);
-        add(mainContent);
+        // button at bottom
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setBackground(new Color(245, 241, 232));
+        buttonPanel.setBorder(new EmptyBorder(15, 0, 20, 0));
+        JLabel captionLabel = new JLabel("Click the button to see your results!");
+        captionLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
+        captionLabel.setForeground(new Color(212, 175, 55));
+        buttonPanel.add(captionLabel);
+        buttonPanel.add(finishedQuizButton);
+        add(buttonPanel, BorderLayout.SOUTH);
 
     }
 }

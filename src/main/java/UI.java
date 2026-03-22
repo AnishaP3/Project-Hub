@@ -168,7 +168,7 @@ public class UI extends JPanel {
         filterScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         // "Filter" header row
-        JPanel optionsRow = buildSectionHeader("Filter", false, null, null);
+        JPanel optionsRow = buildSectionHeader("Filters", false, null, null);
         filterPanel.add(optionsRow);
         filterPanel.add(buildDivider());
 
@@ -229,8 +229,12 @@ public class UI extends JPanel {
         pages.add(title, "TITLE");
         pages.add(shoppingPage, "SHOPPING");
 
+        // Making the recommendations page
+        RecommendationPage recPage = new RecommendationPage(this);
+        pages.add(recPage, "RECOMMENDATIONS");
+
         //Making the Quiz page:
-        QuizPage quiz = new QuizPage(cardLayout);
+        QuizPage quiz = new QuizPage(cardLayout, pages, recPage);
         pages.add(quiz, "QUIZ");
 
         //making the menu buttons
@@ -433,11 +437,16 @@ public class UI extends JPanel {
         header.setBorder(new EmptyBorder(14, 20, 14, 20));
 
         JLabel titleLabel = new JLabel(title);
-        boolean isOptions = title.equals("Options");
-        titleLabel.setFont(new Font("SansSerif", isOptions ? Font.PLAIN : Font.BOLD, 15));
-        titleLabel.setForeground(new Color(30, 30, 30));
-
-        header.add(titleLabel, BorderLayout.WEST);
+        if (title.equals("Filters")) {
+            titleLabel.setFont(new Font("Serif", Font.BOLD, 18));
+            titleLabel.setForeground(new Color(212, 175, 55));
+            titleLabel.setHorizontalAlignment(JLabel.CENTER);
+            header.add(titleLabel, BorderLayout.CENTER);
+        } else {
+            titleLabel.setFont(new Font("SansSerif", Font.BOLD, 15));
+            titleLabel.setForeground(new Color(30, 30, 30));
+            header.add(titleLabel, BorderLayout.WEST);
+        }
         if (toggleLabel != null) header.add(toggleLabel, BorderLayout.EAST);
 
         return header;
@@ -447,6 +456,7 @@ public class UI extends JPanel {
     public JPanel buildCheckboxGrid(String[] options, Set<String> activeSet) {
         JPanel grid = new JPanel(new GridLayout(0, 2, 0, 0));
         grid.setBackground(Color.WHITE);
+        grid.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         for (String opt : options) {
             JCheckBox cb = new JCheckBox(opt);
@@ -459,10 +469,10 @@ public class UI extends JPanel {
         }
 
         // Wrap in a centering panel
-        JPanel centered = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        JPanel centered = new JPanel(new BorderLayout());
         centered.setBackground(Color.WHITE);
-        centered.setBorder(new EmptyBorder(6, 0, 12, 0));
-        centered.add(grid);
+        centered.setBorder(new EmptyBorder(4, 0, 12, 0));
+        centered.add(grid,  BorderLayout.NORTH);
         return centered;
     }
 
