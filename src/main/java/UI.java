@@ -16,6 +16,7 @@ public class UI extends JPanel {
     List<Products> productsList;
     JPanel ProductDisplay;
     Filter filter;
+    JLabel cartCountLabel;
 
     // Active filter state
     Set<String> activeColors = new HashSet<>();
@@ -133,15 +134,43 @@ public class UI extends JPanel {
         header.setPreferredSize(new Dimension(0, 60));
 
         // Adding Shopping cart to the header (right side)
-        JLabel cart = new JLabel("🛒");
+        // Create cart panel with clickable icon and count badge
+        JPanel cartPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+        cartPanel.setOpaque(false);
+
+        JLabel cartIcon = new JLabel("🛒");
+        cartIcon.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        cartIcon.setForeground(Color.WHITE);
+        cartIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        // Cart count badge
+        cartCountLabel = new JLabel("0");
+        cartCountLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
+        cartCountLabel.setForeground(Color.WHITE);
+        cartCountLabel.setBackground(new Color(212, 175, 55));
+        cartCountLabel.setOpaque(true);
+        cartCountLabel.setBorder(new EmptyBorder(2, 5, 2, 5));
+        cartCountLabel.setVisible(false);
+
+        // Make cart icon clickable
+        cartIcon.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                updateCartPanel();
+                cardLayout.show(pages, "CART");
+            }
+        });
+
+        cartPanel.add(cartIcon);
+        cartPanel.add(cartCountLabel);
+
         JLabel companyName = new JLabel("\uD835\uDCD6\uD835\uDCF5\uD835\uDCEA\uD835\uDCF6\uD835\uDCF2\uD835\uDCEF\uD835\uDD02");
-        cart.setFont(new Font("SansSerif", Font.PLAIN, 20));
-        cart.setForeground(Color.WHITE);
-        cart.setBorder(new EmptyBorder(10, 20, 10, 20));
         companyName.setFont(new Font("SansSerif", Font.PLAIN, 25));
         companyName.setForeground(Color.WHITE);
         companyName.setBorder(new EmptyBorder(10, 20, 10, 20));
-        header.add(cart, BorderLayout.EAST);
+        // Add to header
+        header.add(companyName, BorderLayout.WEST);
+        header.add(cartPanel, BorderLayout.EAST);
 
         // Adding Components to their respective panels
         centerPanel.add(titleLabel);
@@ -332,8 +361,28 @@ public class UI extends JPanel {
         addToCartButton.setForeground(Color.BLACK);
         addToCartButton.setFont(new Font("SansSerif", Font.BOLD, 14));
         addToCartButton.setFocusPainted(false);
-        panel.add(addToCartButton);
 
+        // Adding to cart ActionListener
+        addToCartButton.addActionListener(e -> {
+            // Add 1 by default from the product grid
+            FreqBought.addToCart(products, 1);
+
+            // Update cart count badge if we have it
+            if (cartCountLabel != null) {
+                int totalItems = FreqBought.getTotalItemCount();
+                cartCountLabel.setText(String.valueOf(totalItems));
+                cartCountLabel.setVisible(totalItems > 0);
+            }
+
+            // Show confirmation message
+            JOptionPane.showMessageDialog(panel,
+                    products.getName() + " added to cart!\n" +
+                            "Price: $" + products.getPrice(),
+                    "Added to Cart",
+                    JOptionPane.INFORMATION_MESSAGE);
+        });
+
+        panel.add(addToCartButton);
         return panel;
     }
 
@@ -380,6 +429,22 @@ public class UI extends JPanel {
         }
         ProductDisplay.revalidate();
         ProductDisplay.repaint();
+    }
+
+    // ======================
+    // UPDATE CART PANEL
+    // ======================
+
+    // Updates the cart panel with current cart contents
+    public void updateCartPanel() {
+        // For now, just show a message that the cart panel is being created
+        // This is a placeholder - we'll add the full cart display later
+        JOptionPane.showMessageDialog(this,
+                "Cart panel will be created here!\n" +
+                        "Items in cart: " + FreqBought.getTotalItemCount() + "\n" +
+                        "Total: $" + String.format("%.2f", FreqBought.getTotalPrice()),
+                "Shopping Cart",
+                JOptionPane.INFORMATION_MESSAGE);
     }
 
     // ========================
