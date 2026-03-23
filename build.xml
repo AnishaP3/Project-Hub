@@ -1,0 +1,47 @@
+<project name="E-Commerce Website" default="jar">
+
+    <!-- Compile Java files into /build -->
+    <target name="compile" depends="copy-resources">
+        <mkdir dir="build"/>
+        <javac srcdir="src/main/java" destdir="build"/>
+    </target>
+
+    <!-- Create JAR file in /dist -->
+    <target name="jar" depends="compile">
+        <mkdir dir="dist"/>
+        <jar destfile="dist/e_commerce.jar" basedir="build">
+            <manifest>
+                <attribute name="Main-Class" value="Main"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <!-- Clean build and dist folders -->
+    <target name="clean">
+        <delete dir="build"/>
+        <delete dir="dist"/>
+    </target>
+
+    <!-- Include files in resources -->
+    <target name="copy-resources">
+        <copy todir="build">
+            <fileset dir="resources">
+                <include name="**/*.csv"/>
+                <include name="**/*.png"/>
+                <include name="**/*.jpg"/>
+                <include name="**/*.txt"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- Run the program -->
+    <target name="run" depends="compile">
+        <java classname="Main" fork="true">
+            <classpath>
+                <pathelement path="build"/>
+            </classpath>
+        </java>
+    </target>
+
+</project>
+

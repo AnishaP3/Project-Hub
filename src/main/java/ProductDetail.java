@@ -4,9 +4,9 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 
 public class ProductDetail extends JPanel {
-    private Products product;
-    private CardLayout cardLayout;
-    private JPanel pages;
+    private final Products product;
+    private final CardLayout cardLayout;
+    private final JPanel pages;
 
     // Constructor
     public ProductDetail(Products product, CardLayout cardLayout, JPanel pages) {
@@ -73,7 +73,7 @@ public class ProductDetail extends JPanel {
         header.setPreferredSize(new Dimension(0, 60));
 
         // Creating Back Button and adding it to the header
-        JButton backButton = new JButton("←\uD835\uDE3D\uD835\uDE3C\uD835\uDE3E\uD835\uDE46");
+        JButton backButton = new JButton("\uD835\uDE3D\uD835\uDE3C\uD835\uDE3E\uD835\uDE46");
         backButton.setFont(new Font("SansSerif", Font.BOLD, 16));
         backButton.setForeground(Color.BLACK);
         backButton.setBorder(new EmptyBorder(0, 20, 0, 0));
