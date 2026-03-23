@@ -190,6 +190,19 @@ public class ProductDetail extends JPanel {
         buyButton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         buyButton.setOpaque(true);
 
+
+        // ADD ACTION LISTENER
+        buyButton.addActionListener(e -> {
+            // Get the quantity from the spinner
+            int quantity = (Integer) quantitySpinner.getValue();
+
+            // Add to cart
+            FreqBought.addToCart(product, quantity);
+
+            // Show confirmation message
+            JOptionPane.showMessageDialog(this, quantity + " x " + product.getName() + " added to cart!\n" + "Subtotal: $" + String.format("%.2f", product.getPrice() * quantity), "Added to Cart", JOptionPane.INFORMATION_MESSAGE);
+        });
+
         // Adding all elements to the info panel
         infoPanel.add(Box.createVerticalStrut(10));
         infoPanel.add(nameLabel);
