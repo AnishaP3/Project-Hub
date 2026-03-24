@@ -152,15 +152,6 @@ public class UI extends JPanel {
         cartCountLabel.setBorder(new EmptyBorder(2, 5, 2, 5));
         cartCountLabel.setVisible(false);
 
-        // Make cart icon clickable
-        cartIcon.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                updateCartPanel();
-                cardLayout.show(pages, "CART");
-            }
-        });
-
         cartPanel.add(cartIcon);
         cartPanel.add(cartCountLabel);
 
@@ -365,27 +356,6 @@ public class UI extends JPanel {
         addToCartButton.setFont(new Font("SansSerif", Font.BOLD, 14));
         addToCartButton.setFocusPainted(false);
 
-        // Adding to cart ActionListener
-        addToCartButton.addActionListener(e -> {
-            // Add 1 by default from the product grid
-            FreqBought.addToCart(products, 1);
-
-            // Update cart count badge if we have it
-            if (cartCountLabel != null) {
-                int totalItems = FreqBought.getTotalItemCount();
-                cartCountLabel.setText(String.valueOf(totalItems));
-                cartCountLabel.setVisible(totalItems > 0);
-            }
-
-            // Show confirmation message
-            JOptionPane.showMessageDialog(panel,
-                    products.getName() + " added to cart!\n" +
-                            "Price: $" + products.getPrice(),
-                    "Added to Cart",
-                    JOptionPane.INFORMATION_MESSAGE);
-        });
-
-        panel.add(addToCartButton);
         return panel;
     }
 
@@ -434,21 +404,21 @@ public class UI extends JPanel {
         ProductDisplay.repaint();
     }
 
-    // ======================
-    // UPDATE CART PANEL
-    // ======================
-
-    // Updates the cart panel with current cart contents
-    public void updateCartPanel() {
-        // For now, just show a message that the cart panel is being created
-        // This is a placeholder - we'll add the full cart display later
-        JOptionPane.showMessageDialog(this,
-                "Cart panel will be created here!\n" +
-                        "Items in cart: " + FreqBought.getTotalItemCount() + "\n" +
-                        "Total: $" + String.format("%.2f", FreqBought.getTotalPrice()),
-                "Shopping Cart",
-                JOptionPane.INFORMATION_MESSAGE);
-    }
+//    // ======================
+//    // UPDATE CART PANEL
+//    // ======================
+//
+//    // Updates the cart panel with current cart contents
+//    public void updateCartPanel() {
+//        // For now, just show a message that the cart panel is being created
+//        // This is a placeholder - we'll add the full cart display later
+//        JOptionPane.showMessageDialog(this,
+//                "Cart panel will be created here!\n" +
+//                        "Items in cart: " + FreqBought.getTotalItemCount() + "\n" +
+//                        "Total: $" + String.format("%.2f", FreqBought.getTotalPrice()),
+//                "Shopping Cart",
+//                JOptionPane.INFORMATION_MESSAGE);
+//    }
 
     // ========================
     // FILTER HELPER METHODS
