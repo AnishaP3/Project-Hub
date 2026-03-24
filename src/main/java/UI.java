@@ -285,6 +285,9 @@ public class UI extends JPanel {
         add(header, BorderLayout.NORTH);
         add(pages, BorderLayout.CENTER);
         ProductDisplay.setOpaque(false);
+
+        // Show quiz invitation popup shortly after the window appears
+        QuizPopUp.show(this, cardLayout, pages);
     }
 
     // =========================
