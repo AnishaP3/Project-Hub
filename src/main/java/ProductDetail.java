@@ -73,7 +73,7 @@ public class ProductDetail extends JPanel {
         header.setPreferredSize(new Dimension(0, 60));
 
         // Creating Back Button and adding it to the header
-        JButton backButton = new JButton("\uD835\uDE3D\uD835\uDE3C\uD835\uDE3E\uD835\uDE46");
+        JButton backButton = new JButton("← BACK TO SHOPPING");
         backButton.setFont(new Font("SansSerif", Font.BOLD, 16));
         backButton.setForeground(Color.BLACK);
         backButton.setBorder(new EmptyBorder(0, 20, 0, 0));
@@ -90,21 +90,31 @@ public class ProductDetail extends JPanel {
 
         // LEFT: Adjusts Image of product
         int bigImgW = 480, bigImgH = 580;
-        ImageIcon icon = new ImageIcon(getClass().getResource(product.getImagePath()));
-        Image image = icon.getImage();
-        double scale = Math.min((double) bigImgW / image.getWidth(null), (double) bigImgH / image.getHeight(null));
-        int newW = (int) (image.getWidth(null) * scale);
-        int newH = (int) (image.getHeight(null) * scale);
-        Image scaledImage = image.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
-        JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
-        imageLabel.setHorizontalAlignment(JLabel.CENTER);
-        imageLabel.setVerticalAlignment(JLabel.CENTER);
-
         JPanel imageContainer = new JPanel(new GridBagLayout());
-        imageContainer.setBackground(Color.WHITE);
-        imageContainer.setBorder(new LineBorder(new Color(220, 220, 220), 1, false));
-        imageContainer.add(imageLabel);
 
+        try {
+            ImageIcon icon = new ImageIcon(getClass().getResource(product.getImagePath()));
+            Image image = icon.getImage();
+            double scale = Math.min((double) bigImgW / image.getWidth(null), (double) bigImgH / image.getHeight(null));
+            int newW = (int) (image.getWidth(null) * scale);
+            int newH = (int) (image.getHeight(null) * scale);
+            Image scaledImage = image.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+            JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
+            imageLabel.setHorizontalAlignment(JLabel.CENTER);
+            imageLabel.setVerticalAlignment(JLabel.CENTER);
+
+            imageContainer.setBackground(Color.WHITE);
+            imageContainer.setBorder(new LineBorder(new Color(220, 220, 220), 1, false));
+            imageContainer.add(imageLabel);
+        } catch (Exception e) {
+            JLabel errorLabel = new JLabel("Image not found");
+            errorLabel.setHorizontalAlignment(JLabel.CENTER);
+            errorLabel.setVerticalAlignment(JLabel.CENTER);
+
+            imageContainer.setBackground(Color.WHITE);
+            imageContainer.setBorder(new LineBorder(new Color(220, 220, 220), 1, false));
+            imageContainer.add(errorLabel);
+        }
         // RIGHT: Info about the product
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
@@ -190,17 +200,11 @@ public class ProductDetail extends JPanel {
         buyButton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         buyButton.setOpaque(true);
 
-
         // ADD ACTION LISTENER
         buyButton.addActionListener(e -> {
             // Get the quantity from the spinner
             int quantity = (Integer) quantitySpinner.getValue();
 
-            // Add to cart
-            FreqBought.addToCart(product, quantity);
-
-            // Show confirmation message
-            JOptionPane.showMessageDialog(this, quantity + " x " + product.getName() + " added to cart!\n" + "Subtotal: $" + String.format("%.2f", product.getPrice() * quantity), "Added to Cart", JOptionPane.INFORMATION_MESSAGE);
         });
 
         // Adding all elements to the info panel
@@ -229,7 +233,27 @@ public class ProductDetail extends JPanel {
 
         mainContent.add(imageContainer);
         mainContent.add(infoPanel);
-        add(mainContent, BorderLayout.CENTER);
+
+        // Create a panel to hold both main content and featured accessory
+        JPanel contentPanel = new JPanel(new BorderLayout());
+        contentPanel.setBackground(new Color(245, 241, 232));
+        contentPanel.add(mainContent, BorderLayout.CENTER);
+
+        // Add featured accessory panel at the bottom using FreqBought
+        JPanel featuredAccessoryPanel = FreqBought.createFeaturedAccessoryPanel(product, getClass().getClassLoader());
+        contentPanel.add(featuredAccessoryPanel, BorderLayout.SOUTH);
+
+        JScrollPane scrollPane = new JScrollPane(contentPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        scrollPane.setBorder(null);
+        scrollPane.getViewport().setBackground(new Color(245, 241, 232));
+
+        // Add the scroll pane instead of contentPanel directly
+        add(scrollPane, BorderLayout.CENTER);
+
+
     }
 
     // Makes the label for the details
