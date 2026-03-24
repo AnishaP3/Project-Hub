@@ -27,21 +27,22 @@ public class CartTest {
         assertEquals(1, cart.size());
         assertTrue(cart.containsKey("Casual Hoodie"));
         assertEquals(1, (int) cart.get("Casual Hoodie"));
-
     }
 
     @Test
     public void testRemoveProduct() {
         // Create a product
         Products product = new Products("Casual Hoodie", "/clothes/casualHoodie.jpg", "A relaxed everyday casual wear hoodie, perfect for lounging or running errands. Material: 80% Cotton, 20% Polyester. Color: Heather Grey. Sizes Available: S, L. Price: $39.99", "Hoodie", "Grey", "Cotton,Polyester", "Small,Large", 39.99, 4.5);
+        Products productB = new Products("Preppy Sweater", "/clothes/preppy.jpg", "A refined smart-casual / outing sweater ideal for college settings, outings, and casual Fridays. Material: Cotton Blend. Color: Beige. Sizes Available: S, M. Price: $45.99" ,"Sweater", "Beige", "Cotton", "Small,Medium", 45.99, 3.5);
 
         // Test the methods
         Cart.addProduct(product);
+        Cart.addProduct(productB);
         Cart.removeProduct("Casual Hoodie");
         Map<String, Integer> cart = Cart.readCart();
 
         // Assert
-        assertEquals(0, cart.size());
+        assertEquals(1, cart.size());
     }
 
     @Test

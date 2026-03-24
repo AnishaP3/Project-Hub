@@ -61,7 +61,7 @@ public class FilterTest {
     @Test
     public void testColorFilter() {
         // Checking with colour black
-        Set<String> colors = Set.of("Black");
+        Set<String> colors = Set.of("black");
         Set<String> empty = Set.of();
 
         // Checking with the filters applied

@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,9 +25,13 @@ public class Filter {
          */
 
         if (!colors.isEmpty()) {
+            Set<String> lowerColors = new HashSet<>();
+            for (String col : colors) {
+                lowerColors.add(col.toLowerCase());
+            }
             result.removeIf(p -> {
                 for (String c : p.getColor().split(",")) {
-                    if (colors.contains(c.trim())) {
+                    if (lowerColors.contains(c.trim().toLowerCase())) {
                         return false; // keep product
                     }
                 }
