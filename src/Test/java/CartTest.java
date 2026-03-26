@@ -1,5 +1,5 @@
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Map;
 
@@ -9,7 +9,7 @@ import static org.junit.Assert.assertTrue;
 
 public class CartTest {
     // Clears the cart
-    @BeforeEach
+    @Before
     public void setUp() {
         Cart.clearCart();
     }
@@ -57,12 +57,12 @@ public class CartTest {
         Cart.addProduct(productB);
 
         // Assert
-        assertEquals(3, Cart.getTotalCount());
+        assertEquals(3, Cart.getTotalCountOfItems());
     }
 
     @Test
     public void testEmptyCartCount() {
-        assertEquals(0, Cart.getTotalCount());
+        assertEquals(0, Cart.getTotalCountOfItems());
     }
 
     @Test

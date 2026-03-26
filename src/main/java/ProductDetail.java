@@ -7,12 +7,14 @@ public class ProductDetail extends JPanel {
     private final Products product;
     private final CardLayout cardLayout;
     private final JPanel pages;
+    private final UI ui;
 
     // Constructor
-    public ProductDetail(Products product, CardLayout cardLayout, JPanel pages) {
+    public ProductDetail(Products product, CardLayout cardLayout, JPanel pages, UI ui) {
         this.product = product;
         this.cardLayout = cardLayout;
         this.pages = pages;
+        this.ui = ui;
         setupPanel();
     }
 
@@ -190,21 +192,32 @@ public class ProductDetail extends JPanel {
         ((JSpinner.DefaultEditor) quantitySpinner.getEditor()).getTextField().setHorizontalAlignment(JTextField.CENTER);
 
         // ADD TO BAG button
-        JButton buyButton = new JButton("ADD TO BAG");
-        buyButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 55));
-        buyButton.setAlignmentX(Component.LEFT_ALIGNMENT);
-        buyButton.setBackground(Color.BLACK);
-        buyButton.setForeground(Color.WHITE);
-        buyButton.setFont(new Font("SansSerif", Font.BOLD, 16));
-        buyButton.setFocusPainted(false);
-        buyButton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-        buyButton.setOpaque(true);
+        JButton addToBagButton = new JButton("ADD TO BAG");
+        addToBagButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 55));
+        addToBagButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        addToBagButton.setBackground(Color.BLACK);
+        addToBagButton.setForeground(Color.WHITE);
+        addToBagButton.setFont(new Font("SansSerif", Font.BOLD, 16));
+        addToBagButton.setFocusPainted(false);
+        addToBagButton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        addToBagButton.setOpaque(true);
 
         // ADD ACTION LISTENER
-        buyButton.addActionListener(e -> {
+        addToBagButton.addActionListener(e -> {
             // Get the quantity from the spinner
             int quantity = (Integer) quantitySpinner.getValue();
 
+            // Add the product with the correct quantity to the cart
+            for (int i = 0; i < quantity; i++) {
+                Cart.addProduct(product);
+            }
+
+            int count = Cart.getTotalCountOfItems();
+            ui.cartCountLabel.setText(String.valueOf(count));
+            ui.cartCountLabel.setVisible(count > 0);
+
+            // Show confirmation
+            JOptionPane.showMessageDialog(this, quantity + product.getName() + " added to bag");
         });
 
         // Adding all elements to the info panel
@@ -229,7 +242,7 @@ public class ProductDetail extends JPanel {
         infoPanel.add(Box.createVerticalStrut(8));
         infoPanel.add(quantitySpinner);
         infoPanel.add(Box.createVerticalStrut(20));
-        infoPanel.add(buyButton);
+        infoPanel.add(addToBagButton);
 
         mainContent.add(imageContainer);
         mainContent.add(infoPanel);

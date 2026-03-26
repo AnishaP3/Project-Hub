@@ -138,22 +138,27 @@ public class UI extends JPanel {
         JPanel cartPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
         cartPanel.setOpaque(false);
 
-        JLabel cartIcon = new JLabel("🛒");
-        cartIcon.setFont(new Font("SansSerif", Font.PLAIN, 20));
-        cartIcon.setForeground(Color.WHITE);
-        cartIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        JButton cartButton = new JButton("🛒");
+        cartButton.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        cartButton.setForeground(Color.WHITE);
+        cartButton.setBorder(new EmptyBorder(12, 0, 0, 15));
+        cartButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        cartButton.setBackground(new Color(0, 0, 0));
+        cartButton.addActionListener(e -> {
+            cardLayout.show(pages, "CHECKOUT");
+        });
 
         // Cart count badge
         cartCountLabel = new JLabel("0");
-        cartCountLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
+        cartCountLabel.setFont(new Font("SansSerif", Font.BOLD, 15));
         cartCountLabel.setForeground(Color.WHITE);
-        cartCountLabel.setBackground(new Color(212, 175, 55));
+        cartCountLabel.setBackground(new Color(0, 0, 0));
         cartCountLabel.setOpaque(true);
-        cartCountLabel.setBorder(new EmptyBorder(2, 5, 2, 5));
+        cartCountLabel.setBorder(new EmptyBorder(2, 5, 2, 8));
         cartCountLabel.setVisible(false);
 
-        cartPanel.add(cartIcon);
         cartPanel.add(cartCountLabel);
+        cartPanel.add(cartButton);
 
         JLabel companyName = new JLabel("\uD835\uDCD6\uD835\uDCF5\uD835\uDCEA\uD835\uDCF6\uD835\uDCF2\uD835\uDCEF\uD835\uDD02");
         companyName.setFont(new Font("SansSerif", Font.PLAIN, 25));
@@ -257,6 +262,11 @@ public class UI extends JPanel {
         QuizPage quiz = new QuizPage(cardLayout, pages, recPage);
         pages.add(quiz, "QUIZ");
 
+        // Making the Checkout Page
+        CheckoutPage checkout = new CheckoutPage();
+        pages.add(checkout, "CHECKOUT");
+
+
         //making the menu buttons
         JButton homeButton = createMenuButton("ʜᴏᴍᴇ", e -> cardLayout.show(pages, "TITLE"));
         JButton shoppingMenuButton = createMenuButton("ᴘʀᴏᴅᴜᴄᴛs", e -> cardLayout.show(pages, "SHOPPING"));
@@ -326,7 +336,7 @@ public class UI extends JPanel {
         productName.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                ProductDetail detail = new ProductDetail(products, cardLayout, pages);
+                ProductDetail detail = new ProductDetail(products, cardLayout, pages, UI.this);
                 pages.add(detail, "DETAIL");
                 cardLayout.show(pages, "DETAIL");
             }
@@ -355,6 +365,18 @@ public class UI extends JPanel {
         addToCartButton.setForeground(Color.BLACK);
         addToCartButton.setFont(new Font("SansSerif", Font.BOLD, 14));
         addToCartButton.setFocusPainted(false);
+
+        addToCartButton.addActionListener(e -> {
+            Cart.addProduct(products);
+
+            // update cart badge
+            int count = Cart.getTotalCountOfItems();
+            cartCountLabel.setText(String.valueOf(count));
+            cartCountLabel.setVisible(count > 0);
+
+        });
+
+        panel.add(addToCartButton);
 
         return panel;
     }
@@ -404,21 +426,6 @@ public class UI extends JPanel {
         ProductDisplay.repaint();
     }
 
-//    // ======================
-//    // UPDATE CART PANEL
-//    // ======================
-//
-//    // Updates the cart panel with current cart contents
-//    public void updateCartPanel() {
-//        // For now, just show a message that the cart panel is being created
-//        // This is a placeholder - we'll add the full cart display later
-//        JOptionPane.showMessageDialog(this,
-//                "Cart panel will be created here!\n" +
-//                        "Items in cart: " + FreqBought.getTotalItemCount() + "\n" +
-//                        "Total: $" + String.format("%.2f", FreqBought.getTotalPrice()),
-//                "Shopping Cart",
-//                JOptionPane.INFORMATION_MESSAGE);
-//    }
 
     // ========================
     // FILTER HELPER METHODS
