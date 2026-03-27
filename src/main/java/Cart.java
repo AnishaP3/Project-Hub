@@ -1,5 +1,7 @@
 import java.util.HashMap;
 import java.util.Map;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Cart {
     private static final Map<String, Integer> cart = new HashMap<>();
@@ -29,6 +31,16 @@ public class Cart {
         cart.clear();
     }
 
+    public static void writeToCSV(Products p) {
+        String filePath = "resources/Cart/cart.csv";
+        try (FileWriter fw = new FileWriter(filePath, true)) {
+            fw.write(p.getName() + "," +
+                    p.getPrice() + "," +
+                    cart.getOrDefault(p.getName(), 1) + "\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

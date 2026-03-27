@@ -210,6 +210,7 @@ public class ProductDetail extends JPanel {
             // Add the product with the correct quantity to the cart
             for (int i = 0; i < quantity; i++) {
                 Cart.addProduct(product);
+                Cart.writeToCSV(product);
             }
 
             int count = Cart.getTotalCountOfItems();

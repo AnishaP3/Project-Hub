@@ -368,6 +368,7 @@ public class UI extends JPanel {
 
         addToCartButton.addActionListener(e -> {
             Cart.addProduct(products);
+            Cart.writeToCSV(products);
 
             // update cart badge
             int count = Cart.getTotalCountOfItems();
