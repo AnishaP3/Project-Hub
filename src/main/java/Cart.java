@@ -6,6 +6,37 @@ import java.io.IOException;
 public class Cart {
     private static final Map<String, Integer> cart = new HashMap<>();
 
+    String name;
+    double price;
+    int quantity;
+
+    Cart(String name, double price, int quantity) {
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+    }
+    Cart(){}
+
+    public String getName(){
+        return name;
+    }
+    public double getPrice(){
+        return price;
+    }
+    public int getQuantity(){
+        return quantity;
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+    public void setPrice(double price){
+        this.price = price;
+    }
+    public void setQuantity(int quantity){
+        this.quantity = quantity;
+    }
+
     public static void addProduct(Products p) {
         if (cart.containsKey(p.getName())) {
             cart.put(p.getName(), cart.get(p.getName()) + 1);
