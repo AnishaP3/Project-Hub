@@ -6,11 +6,14 @@ import java.util.List;
 
 public class CheckoutPage extends JPanel {
 
-    private int total = 0;
     public List<Products> allProducts;
-
     private JPanel contentPanel;
     private JPanel cartPanel;
+
+    private JLabel totalPriceLabel;
+    private JLabel taxLabel;
+    private JLabel subtotalLabel;
+
     private UI ui;
 
     CheckoutPage(UI ui) {
@@ -55,12 +58,7 @@ public class CheckoutPage extends JPanel {
         scrollPane.setPreferredSize(new Dimension(700, 500));
         scrollPane.setVisible(true);
 
-        JPanel totalPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        totalPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-        totalPanel.setBackground(new Color(218, 190, 90));
-        JLabel totalLabel = new JLabel("Total: $");
-        totalLabel.setFont(new Font("SansSerif", Font.BOLD, 22));
-        totalPanel.add(totalLabel);
+        JPanel totalPanel = totalPanelSection();
         wrapper.add(totalPanel, BorderLayout.SOUTH);
 
         JPanel centerPanel = new JPanel(new BorderLayout());
@@ -113,7 +111,14 @@ public class CheckoutPage extends JPanel {
         imageLabel.setHorizontalAlignment(JLabel.CENTER);
         imageLabel.setVerticalAlignment(JLabel.CENTER);
         imageContainer.add(imageLabel, BorderLayout.CENTER);
-        mainProductPanel.add(imageContainer, BorderLayout.WEST);
+
+        //PRICE * QUANTITY:
+        JLabel quantityPrice = new JLabel(String.format("$%.2f",currentProduct.getPrice() * quantity));
+        quantityPrice.setHorizontalAlignment(JLabel.CENTER);
+        quantityPrice.setVerticalAlignment(JLabel.CENTER);
+        quantityPrice.setFont(new Font("SansSerif", Font.BOLD, 30));
+        quantityPrice.setBackground(Color.WHITE);
+        quantityPrice.setBorder(new EmptyBorder(10,10,10,10));
 
         //INFORMATION:
         JPanel infoPanel = new JPanel();
@@ -142,7 +147,12 @@ public class CheckoutPage extends JPanel {
         addQuantityButton.addActionListener(e -> {
             Cart.addProduct(finalProduct);
             Cart.updateCartCSV(Cart.readCart(), allProducts);
+            Map<String, Integer> cartMap = Cart.readCart();
+
+            int updatedQuantity = cartMap.get(productName);
             quantityLabel.setText("Quantity: " + Cart.readCart().get(productName));
+            quantityPrice.setText(String.format("$%.2f", finalProduct.getPrice() * updatedQuantity));
+            updateTotal();
 
         });
         subtractQuantityButton.addActionListener(e -> {
@@ -161,8 +171,10 @@ public class CheckoutPage extends JPanel {
                     cartMap.put(productName, newQuantity);
                 }
                 Cart.updateCartCSV(cartMap, allProducts);
+                int updatedQuantity = cartMap.get(productName);
                 quantityLabel.setText("Quantity: " + cartMap.getOrDefault(productName, 0));
-
+                quantityPrice.setText(String.format("$%.2f", finalProduct.getPrice() * updatedQuantity));
+                updateTotal();
 
             };
         });
@@ -186,9 +198,96 @@ public class CheckoutPage extends JPanel {
         quantityLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         buttonPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+        mainProductPanel.add(imageContainer, BorderLayout.WEST);
+        mainProductPanel.add(quantityPrice, BorderLayout.EAST);
         mainProductPanel.add(infoPanel, BorderLayout.CENTER);
 
         return mainProductPanel;
+    }
+
+    public JPanel totalPanelSection(){
+        JPanel totalMainPanel = new JPanel();
+        totalMainPanel.setLayout(new BoxLayout(totalMainPanel, BoxLayout.Y_AXIS));
+        totalMainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        totalMainPanel.setBackground(new Color(218, 190, 90));
+
+        JPanel subtotalRow = new JPanel(new BorderLayout());
+        subtotalRow.setBackground(totalMainPanel.getBackground());
+        JLabel subtotalText = new JLabel("Subtotal:");
+        subtotalText.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        subtotalLabel = new JLabel("$0.00 CAD");
+        subtotalLabel.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        subtotalRow.add(subtotalText, BorderLayout.WEST);
+        subtotalRow.add(subtotalLabel, BorderLayout.EAST);
+
+        JPanel taxRow = new JPanel(new BorderLayout());
+        taxRow.setBackground(totalMainPanel.getBackground());
+        JLabel taxText = new JLabel("Tax (13%):");
+        taxText.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        taxLabel = new JLabel("$0.00 CAD");
+        taxLabel.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        taxRow.add(taxText, BorderLayout.WEST);
+        taxRow.add(taxLabel, BorderLayout.EAST);
+
+        JPanel totalRow = new JPanel(new BorderLayout());
+        totalRow.setBackground(totalMainPanel.getBackground());
+        JLabel totalText = new JLabel("Total:");
+        totalText.setFont(new Font("SansSerif", Font.BOLD, 22));
+        totalPriceLabel = new JLabel("$0.00 CAD");
+        totalPriceLabel.setFont(new Font("SansSerif", Font.BOLD, 22));
+        totalRow.add(totalText, BorderLayout.WEST);
+        totalRow.add(totalPriceLabel, BorderLayout.EAST);
+
+        // Checkout button
+        JButton checkoutButton = new JButton("Checkout");
+        checkoutButton.setFont(new Font("SansSerif", Font.BOLD, 20));
+        checkoutButton.setForeground(Color.WHITE);
+        checkoutButton.setBackground(new Color(20, 18, 14));
+        checkoutButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
+        checkoutButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        checkoutButton.addActionListener(e -> {
+            // TODO: Clear cart or proceed to payment
+        });
+
+        totalMainPanel.add(subtotalRow);
+        totalMainPanel.add(Box.createVerticalStrut(15));
+        totalMainPanel.add(taxRow);
+        totalMainPanel.add(Box.createVerticalStrut(15));
+        totalMainPanel.add(totalRow);
+        totalMainPanel.add(Box.createVerticalStrut(30));
+        totalMainPanel.add(checkoutButton);
+
+        updateTotal();
+        return totalMainPanel;
+    }
+
+    public void updateTotal(){
+        Map<String, Integer> cartMap = Cart.readCart();
+        double subtotal = 0;
+
+        for(Map.Entry<String, Integer> entry : cartMap.entrySet()){
+            String productName = entry.getKey();
+            int quantity = entry.getValue();
+
+            Products products = null;
+            for(Products p : allProducts){
+                if(p.getName().equals(productName)){
+                    products = p;
+                    break;
+                }
+            }
+
+            if (products != null) {
+                subtotal += products.getPrice() * quantity;
+            }
+
+            double tax = subtotal * 0.13;
+            double total = subtotal + tax;
+
+            subtotalLabel.setText(String.format("$%.2f CAD", subtotal));
+            taxLabel.setText(String.format("$%.2f CAD", tax));
+            totalPriceLabel.setText(String.format("$%.2f CAD", total));
+        }
     }
 
     public void getAllProducts() {
