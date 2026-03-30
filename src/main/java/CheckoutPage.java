@@ -1,22 +1,23 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.io.InputStream;
 import java.util.*;
 import java.util.List;
 
 public class CheckoutPage extends JPanel {
 
     private int total = 0;
-    public static List<Cart> cart = new ArrayList<>();
     public List<Products> allProducts;
 
     private JPanel contentPanel;
+    private JPanel cartPanel;
     private UI ui;
 
     CheckoutPage(UI ui) {
         this.ui = ui;
+        Cart.loadCartFromCSV();
         checkOutUI();
+        reloadPage();
 
     }
 
@@ -35,12 +36,14 @@ public class CheckoutPage extends JPanel {
         wrapper.setBackground(new Color(245, 238, 210));
         wrapper.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
 
-        JPanel cartPanel = new JPanel();
+        cartPanel = new JPanel();
         cartPanel.setLayout(new BoxLayout(cartPanel, BoxLayout.Y_AXIS));
-        for (Cart item : cart) {
-            JPanel itemPanel = itemsInCart(item);
+
+        Map<String, Integer> cartMap = Cart.readCart();
+        for (Map.Entry<String, Integer> entry : cartMap.entrySet()) {
+            JPanel itemPanel = itemsInCart(entry.getKey(), entry.getValue());
             cartPanel.add(itemPanel);
-            cartPanel.add(Box.createVerticalStrut(15)); // spacing
+            cartPanel.add(Box.createVerticalStrut(15));
         }
         wrapper.add(cartPanel, BorderLayout.CENTER);
 
@@ -68,14 +71,12 @@ public class CheckoutPage extends JPanel {
         //TODO: RECOMMENDATION PANEL
         JPanel recommendations = new JPanel();
         recommendations.setBackground(Color.PINK);
-        recommendations.setBorder(new EmptyBorder(300,300,300,300));
+        recommendations.setBorder(new EmptyBorder(200,200,200,200));
         centerPanel.add(recommendations, BorderLayout.EAST);
 
-        revalidate();
-        repaint();
     }
 
-    public JPanel itemsInCart(Cart item) {
+    public JPanel itemsInCart(String productName, int quantity) {
         JPanel mainProductPanel = new JPanel(new BorderLayout());
         mainProductPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY,1));
         mainProductPanel.setBackground(Color.WHITE);
@@ -84,7 +85,7 @@ public class CheckoutPage extends JPanel {
         //getting the matching photo to product
         Products currentProduct = null;
         for (Products p : allProducts) {
-            if (p.getName().equals(item.name)) {
+            if (p.getName().trim().equalsIgnoreCase(productName.trim())) {
                 currentProduct = p;
                 break;
             }
@@ -119,12 +120,12 @@ public class CheckoutPage extends JPanel {
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
         infoPanel.setBackground(Color.WHITE);
         infoPanel.setBorder(new EmptyBorder(10,10,10,10));
-        JLabel nameLabel = new JLabel(item.name);
+        JLabel nameLabel = new JLabel(productName);
         nameLabel.setFont(new Font("SansSerif", Font.BOLD, 35));
-        JLabel priceLabel = new JLabel(String.format("$%.2f", item.price));
+        JLabel priceLabel = new JLabel(String.format("$%.2f", currentProduct.getPrice()));
         priceLabel.setFont(new Font("SansSerif", Font.PLAIN, 20));
 
-        JLabel quantityLabel = new JLabel("Quantity: " + item.quantity);
+        JLabel quantityLabel = new JLabel("Quantity: " + quantity);
         quantityLabel.setFont(new Font("SansSerif", Font.PLAIN, 20));
 
         JButton addQuantityButton = new JButton("+");
@@ -137,13 +138,33 @@ public class CheckoutPage extends JPanel {
         subtractQuantityButton.setFont(new Font("SansSerif", Font.PLAIN, 20));
         subtractQuantityButton.setBackground(new Color(20, 18, 14));
 
+        Products finalProduct = currentProduct;
         addQuantityButton.addActionListener(e -> {
-            item.quantity += 1;
-            quantityLabel.setText("Quantity: " + item.quantity);
+            Cart.addProduct(finalProduct);
+            Cart.updateCartCSV(Cart.readCart(), allProducts);
+            quantityLabel.setText("Quantity: " + Cart.readCart().get(productName));
+
         });
         subtractQuantityButton.addActionListener(e -> {
-            item.quantity -= 1;
-            quantityLabel.setText("Quantity: " + item.quantity);
+            Map<String, Integer> cartMap = Cart.readCart();
+
+            if(cartMap.containsKey(productName)){
+                int newQuantity = cartMap.get(productName) - 1;
+                if(newQuantity <= 0){
+                    cartPanel.remove(mainProductPanel);
+                    Cart.removeProduct(productName);
+
+                    cartPanel.revalidate();
+                    cartPanel.repaint();
+                }
+                else{
+                    cartMap.put(productName, newQuantity);
+                }
+                Cart.updateCartCSV(cartMap, allProducts);
+                quantityLabel.setText("Quantity: " + cartMap.getOrDefault(productName, 0));
+
+
+            };
         });
 
         JPanel buttonPanel = new JPanel(new FlowLayout());
@@ -170,48 +191,18 @@ public class CheckoutPage extends JPanel {
         return mainProductPanel;
     }
 
-    public void readCartCSV(ClassLoader classLoader) {
-        cart.clear();
-        Map<String, Cart> mergedCart = new LinkedHashMap<>();
-
-        try (InputStream inputStream = classLoader.getResourceAsStream("Cart/cart.csv")) {
-            if (inputStream == null) {
-                throw new RuntimeException("CSV file not found in resources folder.");
-            }
-            try (Scanner scanner = new Scanner(inputStream)) {
-                while (scanner.hasNextLine()) {
-                    String line = scanner.nextLine().trim();
-                    if (line.isEmpty()) continue; // skip empty lines
-                    String[] parts = line.split(",");
-                    if (parts.length == 3) {
-                        String name = parts[0].trim();
-                        double price = Double.parseDouble(parts[1].trim());
-                        int quantity = Integer.parseInt(parts[2].trim());
-
-                        if (mergedCart.containsKey(name)) {
-
-                            Cart existing = mergedCart.get(name);
-                            existing.quantity += quantity;
-                        } else {
-                            mergedCart.put(name, new Cart(name, price, quantity));
-                        }
-
-                    } else {
-                        System.out.println("Skipping invalid line: " + line);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error reading cart CSV", e);
-        }
-        cart.addAll(mergedCart.values());
-    }
-
     public void getAllProducts() {
         Products productClass = new Products();
         allProducts = productClass.readProductCSV(getClass().getClassLoader());
-        readCartCSV(getClass().getClassLoader());
+        Cart.loadCartFromCSV();
+    }
+
+    public void reloadPage(){
+        removeAll();
+        getAllProducts();
+        checkOutUI();
+        revalidate();
+        repaint();
     }
 
 }
