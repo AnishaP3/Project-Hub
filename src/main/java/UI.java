@@ -138,7 +138,12 @@ public class UI extends JPanel {
         JPanel cartPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
         cartPanel.setOpaque(false);
 
-        JButton cartButton = new JButton("🛒");
+        ImageIcon cartIcon = new ImageIcon(getClass().getResource("Cart/shopping_cart.png"));
+        Image cartImage = cartIcon.getImage();
+        Image newCartImage = cartImage.getScaledInstance(40, 40, 0);
+        cartIcon = new ImageIcon(newCartImage);
+
+        JButton cartButton = new JButton(cartIcon);
         cartButton.setFont(new Font("SansSerif", Font.PLAIN, 20));
         cartButton.setForeground(Color.WHITE);
         cartButton.setBorder(new EmptyBorder(12, 0, 0, 15));
@@ -263,9 +268,8 @@ public class UI extends JPanel {
         pages.add(quiz, "QUIZ");
 
         // Making the Checkout Page
-        CheckoutPage checkout = new CheckoutPage();
+        CheckoutPage checkout = new CheckoutPage(this);
         pages.add(checkout, "CHECKOUT");
-
 
         //making the menu buttons
         JButton homeButton = createMenuButton("ʜᴏᴍᴇ", e -> cardLayout.show(pages, "TITLE"));
@@ -368,7 +372,7 @@ public class UI extends JPanel {
 
         addToCartButton.addActionListener(e -> {
             Cart.addProduct(products);
-            Cart.writeToCSV(products);
+            Cart.addProductToCartCSV(products);
 
             // update cart badge
             int count = Cart.getTotalCountOfItems();
