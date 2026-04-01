@@ -3,6 +3,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.awt.event.MouseEvent;
+import javax.swing.border.LineBorder;
 
 public class CheckoutPage extends JPanel {
 
@@ -13,6 +15,7 @@ public class CheckoutPage extends JPanel {
     private JLabel totalPriceLabel;
     private JLabel taxLabel;
     private JLabel subtotalLabel;
+    private JPanel recommendationsPanel;
 
     private UI ui;
 
@@ -67,10 +70,22 @@ public class CheckoutPage extends JPanel {
         add(centerPanel, BorderLayout.CENTER);
 
         //TODO: RECOMMENDATION PANEL
-        JPanel recommendations = new JPanel();
-        recommendations.setBackground(Color.PINK);
-        recommendations.setBorder(new EmptyBorder(200,200,200,200));
-        centerPanel.add(recommendations, BorderLayout.EAST);
+        recommendationsPanel = new JPanel();
+        recommendationsPanel.setLayout(new BoxLayout(recommendationsPanel, BoxLayout.Y_AXIS));
+        recommendationsPanel.setBackground(Color.WHITE);
+        recommendationsPanel.setBorder(BorderFactory.createCompoundBorder(
+                new LineBorder(new Color(220, 210, 180), 1),
+                new EmptyBorder(20, 20, 20, 20)
+        ));
+
+        JLabel recTitle = new JLabel("✨ YOU MIGHT ALSO LIKE ✨");
+        recTitle.setFont(new Font("Georgia", Font.BOLD, 14));
+        recTitle.setForeground(new Color(212, 175, 55));
+        recTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        recommendationsPanel.add(recTitle);
+        recommendationsPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+
+        centerPanel.add(recommendationsPanel, BorderLayout.EAST);
 
     }
 
@@ -87,6 +102,14 @@ public class CheckoutPage extends JPanel {
                 currentProduct = p;
                 break;
             }
+        }
+
+        // ADD THIS NULL CHECK
+        if (currentProduct == null) {
+            System.out.println("ERROR: Product not found: '" + productName + "'");
+            JPanel errorPanel = new JPanel();
+            errorPanel.add(new JLabel("Product not found: " + productName));
+            return errorPanel;
         }
 
         //IMAGE:
@@ -127,6 +150,22 @@ public class CheckoutPage extends JPanel {
         infoPanel.setBorder(new EmptyBorder(10,10,10,10));
         JLabel nameLabel = new JLabel(productName);
         nameLabel.setFont(new Font("SansSerif", Font.BOLD, 35));
+
+
+        // ========== ADDED: Make product name clickable ==========
+        nameLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        nameLabel.setForeground(new Color(212, 175, 55));
+        Products finalProduct = currentProduct;
+        nameLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                ProductDetail detail = new ProductDetail(finalProduct, ui.cardLayout, ui.pages, ui);
+                ui.pages.add(detail, "DETAIL");
+                ui.cardLayout.show(ui.pages, "DETAIL");
+            }
+        });
+        // =============== END ADDED =================
+
         JLabel priceLabel = new JLabel(String.format("$%.2f", currentProduct.getPrice()));
         priceLabel.setFont(new Font("SansSerif", Font.PLAIN, 20));
 
@@ -143,7 +182,7 @@ public class CheckoutPage extends JPanel {
         subtractQuantityButton.setFont(new Font("SansSerif", Font.PLAIN, 20));
         subtractQuantityButton.setBackground(new Color(20, 18, 14));
 
-        Products finalProduct = currentProduct;
+       // Products finalProduct = currentProduct;
         addQuantityButton.addActionListener(e -> {
             Cart.addProduct(finalProduct);
             Cart.updateCartCSV(Cart.readCart(), allProducts);
@@ -202,6 +241,48 @@ public class CheckoutPage extends JPanel {
         mainProductPanel.add(quantityPrice, BorderLayout.EAST);
         mainProductPanel.add(infoPanel, BorderLayout.CENTER);
 
+        // === ADDED: Accessory button (only at the bottom, after everything is created) ====
+        Products accessory = FreqBought.getAccessoryForCheckout(productName);
+        if (accessory != null) {
+            JPanel accessoryRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+            accessoryRow.setBackground(Color.WHITE);
+
+            JLabel plusIcon = new JLabel("+");
+            plusIcon.setFont(new Font("SansSerif", Font.BOLD, 12));
+            plusIcon.setForeground(new Color(212, 175, 55));
+
+            JLabel accessoryName = new JLabel(accessory.getName());
+            accessoryName.setFont(new Font("SansSerif", Font.PLAIN, 10));
+            accessoryName.setForeground(new Color(100, 100, 100));
+
+            JButton addAccessoryBtn = new JButton("ADD");
+            addAccessoryBtn.setFont(new Font("SansSerif", Font.BOLD, 9));
+            addAccessoryBtn.setBackground(new Color(212, 175, 55));
+            addAccessoryBtn.setForeground(Color.BLACK);
+            addAccessoryBtn.setFocusPainted(false);
+            addAccessoryBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            addAccessoryBtn.setPreferredSize(new Dimension(50, 22));
+            addAccessoryBtn.addActionListener(e -> {
+                Cart.addProduct(accessory);
+                Cart.addProductToCartCSV(accessory);
+                Cart.updateCartCSV(Cart.readCart(), allProducts);
+                reloadPage();
+
+                int count = Cart.getTotalCountOfItems();
+                ui.cartCountLabel.setText(String.valueOf(count));
+                ui.cartCountLabel.setVisible(count > 0);
+            });
+
+            accessoryRow.add(plusIcon);
+            accessoryRow.add(accessoryName);
+            accessoryRow.add(addAccessoryBtn);
+
+            // Add the accessory row to infoPanel (this exists now)
+            infoPanel.add(Box.createVerticalStrut(10));
+            infoPanel.add(accessoryRow);
+        }
+        // ========== END ADDED ==========
+
         return mainProductPanel;
     }
 
@@ -247,6 +328,15 @@ public class CheckoutPage extends JPanel {
         checkoutButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         checkoutButton.addActionListener(e -> {
             // TODO: Clear cart or proceed to payment
+            Cart.clearCart();
+            Cart.updateCartCSV(new HashMap<>(), allProducts);
+            ui.cartCountLabel.setText("0");
+            ui.cartCountLabel.setVisible(false);
+            JOptionPane.showMessageDialog(this,
+                    "Thank you for your purchase!\nYour order has been placed.",
+                    "Checkout Successful",
+                    JOptionPane.INFORMATION_MESSAGE);
+            reloadPage();
         });
 
         totalMainPanel.add(subtotalRow);
@@ -293,15 +383,156 @@ public class CheckoutPage extends JPanel {
     public void getAllProducts() {
         Products productClass = new Products();
         allProducts = productClass.readProductCSV(getClass().getClassLoader());
+        // Also load accessories so they can be displayed in cart
+        List<Products> accessories = FreqBought.getAllAccessories();
+        if (accessories != null) {
+            allProducts.addAll(accessories);
+        }
         Cart.loadCartFromCSV();
     }
 
-    public void reloadPage(){
-        removeAll();
-        getAllProducts();
-        checkOutUI();
-        revalidate();
-        repaint();
+    public void reloadPage() {
+        // Reload cart data from CSV
+        Cart.loadCartFromCSV();
+
+        // Clear the cart panel
+        if (cartPanel != null) {
+            cartPanel.removeAll();
+        }
+
+        Map<String, Integer> cartMap = Cart.readCart();
+
+        if (cartMap.isEmpty()) {
+            JLabel emptyLabel = new JLabel("Your cart is empty. Start shopping!");
+            emptyLabel.setFont(new Font("SansSerif", Font.PLAIN, 18));
+            emptyLabel.setForeground(new Color(150, 150, 150));
+            emptyLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            if (cartPanel != null) {
+                cartPanel.add(emptyLabel);
+            }
+        } else {
+            if (cartPanel != null) {
+                for (Map.Entry<String, Integer> entry : cartMap.entrySet()) {
+                    JPanel itemPanel = itemsInCart(entry.getKey(), entry.getValue());
+                    cartPanel.add(itemPanel);
+                    cartPanel.add(Box.createVerticalStrut(15));
+                }
+            }
+        }
+
+        // Update recommendations panel
+        if (recommendationsPanel != null) {
+            recommendationsPanel.removeAll();
+
+            JLabel recTitle = new JLabel("✨ YOU MIGHT ALSO LIKE ✨");
+            recTitle.setFont(new Font("Georgia", Font.BOLD, 14));
+            recTitle.setForeground(new Color(212, 175, 55));
+            recTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+            recommendationsPanel.add(recTitle);
+            recommendationsPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+
+            if (!cartMap.isEmpty()) {
+                JLabel recSubtitle = new JLabel("Complete your look with these accessories");
+                recSubtitle.setFont(new Font("SansSerif", Font.PLAIN, 11));
+                recSubtitle.setForeground(new Color(150, 150, 150));
+                recSubtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+                recommendationsPanel.add(recSubtitle);
+                recommendationsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+
+                Set<String> addedRecs = new HashSet<>();
+                for (Map.Entry<String, Integer> entry : cartMap.entrySet()) {
+                    Products accessory = FreqBought.getAccessoryForCheckout(entry.getKey());
+                    if (accessory != null && !addedRecs.contains(accessory.getName())) {
+                        addedRecs.add(accessory.getName());
+                        JPanel recCard = createRecommendationCard(accessory);
+                        recommendationsPanel.add(recCard);
+                        recommendationsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+                    }
+                }
+            } else {
+                JLabel noRecs = new JLabel("Add items to see recommendations");
+                noRecs.setFont(new Font("SansSerif", Font.ITALIC, 11));
+                noRecs.setForeground(new Color(150, 150, 150));
+                noRecs.setAlignmentX(Component.CENTER_ALIGNMENT);
+                recommendationsPanel.add(noRecs);
+            }
+        }
+
+        updateTotal();
+
+        // Refresh the panels
+        if (cartPanel != null) {
+            cartPanel.revalidate();
+            cartPanel.repaint();
+        }
+        if (recommendationsPanel != null) {
+            recommendationsPanel.revalidate();
+            recommendationsPanel.repaint();
+        }
+    }
+
+    private JPanel createRecommendationCard(Products accessory) {
+        JPanel card = new JPanel(new BorderLayout());
+        card.setBackground(new Color(250, 248, 240));
+        card.setBorder(BorderFactory.createCompoundBorder(
+                new LineBorder(new Color(220, 210, 180), 1),
+                new EmptyBorder(10, 10, 10, 10)
+        ));
+        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
+
+        // Image
+        JPanel imagePanel = new JPanel(new GridBagLayout());
+        imagePanel.setBackground(new Color(250, 248, 240));
+        try {
+            ImageIcon icon = new ImageIcon(getClass().getResource(accessory.getImagePath()));
+            Image scaled = icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+            JLabel imageLabel = new JLabel(new ImageIcon(scaled));
+            imagePanel.add(imageLabel);
+        } catch (Exception e) {
+            JLabel noImage = new JLabel("📦");
+            noImage.setFont(new Font("SansSerif", Font.PLAIN, 30));
+            imagePanel.add(noImage);
+        }
+
+        // Info
+        JPanel infoPanel = new JPanel();
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+        infoPanel.setBackground(new Color(250, 248, 240));
+
+        JLabel nameLabel = new JLabel(accessory.getName());
+        nameLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
+
+        JLabel priceLabel = new JLabel(String.format("$%.2f", accessory.getPrice()));
+        priceLabel.setFont(new Font("SansSerif", Font.PLAIN, 11));
+        priceLabel.setForeground(new Color(138, 28, 28));
+
+        infoPanel.add(nameLabel);
+        infoPanel.add(priceLabel);
+
+        // Add button
+        JButton addBtn = new JButton("+ ADD");
+        addBtn.setFont(new Font("SansSerif", Font.BOLD, 10));
+        addBtn.setBackground(new Color(212, 175, 55));
+        addBtn.setForeground(Color.BLACK);
+        addBtn.setFocusPainted(false);
+        addBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        addBtn.setPreferredSize(new Dimension(60, 25));
+        addBtn.addActionListener(e -> {
+            Cart.addProduct(accessory);
+            Cart.addProductToCartCSV(accessory);
+            Cart.updateCartCSV(Cart.readCart(), allProducts);
+            reloadPage();
+
+            int count = Cart.getTotalCountOfItems();
+            ui.cartCountLabel.setText(String.valueOf(count));
+            ui.cartCountLabel.setVisible(count > 0);
+        });
+
+        card.add(imagePanel, BorderLayout.WEST);
+        card.add(infoPanel, BorderLayout.CENTER);
+        card.add(addBtn, BorderLayout.EAST);
+
+        return card;
     }
 
 }

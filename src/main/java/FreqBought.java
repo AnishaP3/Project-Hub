@@ -102,7 +102,7 @@ public class FreqBought {
      * @return JPanel with the accessory display
      */
     public static JPanel createFeaturedAccessoryPanel(Products mainProduct, ClassLoader classLoader) {
-        System.out.println("=== Looking for accessory for: " + mainProduct.getName());
+       /* System.out.println("=== Looking for accessory for: " + mainProduct.getName());
 
         // TEMPORARY PLACEHOLDER - Full functionality coming in next iteration
         JPanel panel = new JPanel();
@@ -141,8 +141,8 @@ public class FreqBought {
         panel.add(placeholderLabel);
 
         return panel;
-
-    /* FULL CODE FOR NEXT ITERATION - COMMENTED OUT
+*/
+    ///* FULL CODE FOR NEXT ITERATION - COMMENTED OUT
     Products accessory = getAccessoryForProduct(mainProduct.getName());
 
     if (accessory == null) {
@@ -195,7 +195,7 @@ public class FreqBought {
     }
 
     return panel;
-    */
+   // */
     }
 
 
@@ -293,6 +293,31 @@ public class FreqBought {
      */
     public static List<Products> getAllAccessories() {
         return allAccessories;
+    }
+
+    /**
+     * Get the recommended accessory for a specific product (for checkout page)
+     * @param productName The name of the main product
+     * @return The accessory product, or null if not found
+     */
+    public static Products getAccessoryForCheckout(String productName) {
+        return getAccessoryForProduct(productName);
+    }
+
+    /**
+     * Get all accessories (for displaying in checkout)
+     * @return List of all accessories
+     */
+    public static List<Products> getAllAccessoriesList() {
+        return allAccessories;
+    }
+
+    /**
+     * Get the mapping of products to their accessories
+     * @return Map of product name to accessory name
+     */
+    public static Map<String, String> getProductAccessoryMapping() {
+        return productToAccessory;
     }
 
     /**

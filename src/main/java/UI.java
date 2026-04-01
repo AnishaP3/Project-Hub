@@ -150,6 +150,13 @@ public class UI extends JPanel {
         cartButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         cartButton.setBackground(new Color(0, 0, 0));
         cartButton.addActionListener(e -> {
+            // Find the checkout page and refresh it before showing
+            for (Component comp : pages.getComponents()) {
+                if (comp instanceof CheckoutPage) {
+                    ((CheckoutPage) comp).reloadPage();
+                    break;
+                }
+            }
             cardLayout.show(pages, "CHECKOUT");
         });
 

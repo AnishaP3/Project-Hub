@@ -254,8 +254,8 @@ public class ProductDetail extends JPanel {
         contentPanel.add(mainContent, BorderLayout.CENTER);
 
         // Add featured accessory panel at the bottom using FreqBought
-        JPanel featuredAccessoryPanel = FreqBought.createFeaturedAccessoryPanel(product, getClass().getClassLoader());
-        contentPanel.add(featuredAccessoryPanel, BorderLayout.SOUTH);
+//        JPanel featuredAccessoryPanel = FreqBought.createFeaturedAccessoryPanel(product, getClass().getClassLoader());
+//        contentPanel.add(featuredAccessoryPanel, BorderLayout.SOUTH);
 
         JScrollPane scrollPane = new JScrollPane(contentPanel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
