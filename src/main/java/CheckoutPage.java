@@ -192,7 +192,7 @@ public class CheckoutPage extends JPanel {
             quantityLabel.setText("Quantity: " + Cart.readCart().get(productName));
             quantityPrice.setText(String.format("$%.2f", finalProduct.getPrice() * updatedQuantity));
             updateTotal();
-
+            reloadPage();
         });
         subtractQuantityButton.addActionListener(e -> {
             Map<String, Integer> cartMap = Cart.readCart();
@@ -203,8 +203,10 @@ public class CheckoutPage extends JPanel {
                     cartPanel.remove(mainProductPanel);
                     Cart.removeProduct(productName);
 
-                    cartPanel.revalidate();
-                    cartPanel.repaint();
+                    Cart.updateCartCSV(Cart.readCart(), allProducts);
+                    reloadPage();
+                    return;
+
                 }
                 else{
                     cartMap.put(productName, newQuantity);
