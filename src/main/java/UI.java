@@ -279,10 +279,15 @@ public class UI extends JPanel {
         CheckoutPage checkout = new CheckoutPage(this);
         pages.add(checkout, "CHECKOUT");
 
+        // Making the Friends Page
+        Friends friends = new Friends(productsList, this);
+        pages.add(friends, "FRIENDS");
+
         //making the menu buttons
         JButton homeButton = createMenuButton("ʜᴏᴍᴇ", e -> cardLayout.show(pages, "TITLE"));
         JButton shoppingMenuButton = createMenuButton("ᴘʀᴏᴅᴜᴄᴛs", e -> cardLayout.show(pages, "SHOPPING"));
         JButton quizButton = createMenuButton("ǫᴜɪᴢ", e -> cardLayout.show(pages, "QUIZ"));
+        JButton friendsButton = createMenuButton("ꜰʀɪᴇɴᴅs", e -> cardLayout.show(pages, "FRIENDS"));
 
         // Creating panel for Company name and home button and adding them to it
         JPanel leftHeader = new JPanel(new FlowLayout(FlowLayout.LEFT, 7, 5));
@@ -293,6 +298,7 @@ public class UI extends JPanel {
         leftHeader.add(homeButton);
         leftHeader.add(shoppingMenuButton);
         leftHeader.add(quizButton);
+        leftHeader.add(friendsButton);
 
         header.add(leftHeader, BorderLayout.WEST);
         add(header, BorderLayout.NORTH);
