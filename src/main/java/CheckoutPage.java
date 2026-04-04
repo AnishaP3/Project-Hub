@@ -328,17 +328,29 @@ public class CheckoutPage extends JPanel {
         checkoutButton.setBackground(new Color(20, 18, 14));
         checkoutButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
         checkoutButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         checkoutButton.addActionListener(e -> {
-            // TODO: Clear cart or proceed to payment
+            // Clear the cart
             Cart.clearCart();
             Cart.updateCartCSV(new HashMap<>(), allProducts);
+
+            // Update the cart badge in the main UI
             ui.cartCountLabel.setText("0");
             ui.cartCountLabel.setVisible(false);
+
+            // Show confirmation message
             JOptionPane.showMessageDialog(this,
                     "Thank you for your purchase!\nYour order has been placed.",
                     "Checkout Successful",
                     JOptionPane.INFORMATION_MESSAGE);
+
+            // Refresh the checkout page
             reloadPage();
+
+            // FORCE update the total to show $0.00
+            subtotalLabel.setText("$0.00 CAD");
+            taxLabel.setText("$0.00 CAD");
+            totalPriceLabel.setText("$0.00 CAD");
         });
 
         totalMainPanel.add(subtotalRow);
