@@ -3,6 +3,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 
+
 public class ProductDetail extends JPanel {
     private final Products product;
     private final CardLayout cardLayout;
@@ -218,7 +219,7 @@ public class ProductDetail extends JPanel {
             ui.cartCountLabel.setVisible(count > 0);
 
             // Show confirmation
-            JOptionPane.showMessageDialog(this, quantity + product.getName() + " added to bag");
+            JOptionPane.showMessageDialog(this, quantity + " " + product.getName() + " added to bag");
         });
 
         // Adding all elements to the info panel

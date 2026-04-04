@@ -1,10 +1,10 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.util.*;
 import java.util.List;
-import java.awt.event.MouseEvent;
-import javax.swing.border.LineBorder;
 
 public class CheckoutPage extends JPanel {
 
@@ -263,7 +263,7 @@ public class CheckoutPage extends JPanel {
             addAccessoryBtn.setForeground(Color.BLACK);
             addAccessoryBtn.setFocusPainted(false);
             addAccessoryBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            addAccessoryBtn.setPreferredSize(new Dimension(50, 22));
+            addAccessoryBtn.setPreferredSize(new Dimension(80, 22));
             addAccessoryBtn.addActionListener(e -> {
                 Cart.addProduct(accessory);
                 Cart.addProductToCartCSV(accessory);
@@ -530,7 +530,7 @@ public class CheckoutPage extends JPanel {
         addBtn.setForeground(Color.BLACK);
         addBtn.setFocusPainted(false);
         addBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        addBtn.setPreferredSize(new Dimension(60, 25));
+        addBtn.setPreferredSize(new Dimension(65, 25));
         addBtn.addActionListener(e -> {
             Cart.addProduct(accessory);
             Cart.addProductToCartCSV(accessory);

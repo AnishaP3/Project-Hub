@@ -16,6 +16,9 @@ Sporty,Pink,Uniform,0-20,Minimalistic,Cotton
 Sporty,Black,Monotone,20-50,Streetwear,Wool
 Sporty,Black,Bright,50-80,Streetwear,Chiffon
 Business,Pink,Monotone,0-20,Streetwear,Cotton
+Business,Grey,Monotone,50-80,Formal,Polyester
+Business,Black,Uniform,50-80,Formal,Polyester
 Business,Black,Bright,20-50,Minimalistic,Denim
 Sporty,Pink,,,,
 Artsy,Grey,Uniform,,Streetwear,Cotton
+Business,,,,,

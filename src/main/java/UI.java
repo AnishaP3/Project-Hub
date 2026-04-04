@@ -143,8 +143,9 @@ public class UI extends JPanel {
         Image newCartImage = cartImage.getScaledInstance(40, 40, 0);
         cartIcon = new ImageIcon(newCartImage);
 
-        JButton cartButton = new JButton(cartIcon);
-        cartButton.setFont(new Font("SansSerif", Font.PLAIN, 20));
+//        JButton cartButton = new JButton(cartIcon);
+        JButton cartButton = new JButton("🛒");
+        cartButton.setFont(new Font("SansSerif", Font.PLAIN, 25));
         cartButton.setForeground(Color.WHITE);
         cartButton.setBorder(new EmptyBorder(12, 0, 0, 15));
         cartButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
