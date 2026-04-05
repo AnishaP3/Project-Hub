@@ -53,6 +53,16 @@ public class Cart {
         cart.clear();
     }
 
+    public static void clearCartCSV() {
+        String filePath = "resources/Cart/cart.csv";
+        try (java.io.PrintWriter writer = new java.io.PrintWriter(filePath)) {
+            // write nothing — empties the file
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        cart.clear();
+    }
+
     public static void addProductToCartCSV(Products p) {
         String filePath = "resources/Cart/cart.csv";
         Map<String, Cart> merged = new HashMap<>();

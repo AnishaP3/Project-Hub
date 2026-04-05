@@ -385,14 +385,21 @@ public class UI extends JPanel {
         addToCartButton.setFocusPainted(false);
 
         addToCartButton.addActionListener(e -> {
+            // Only add if not already in cart (quantity starts at 1, adjust in checkout)
+            if (Cart.readCart().containsKey(products.getName())) {
+                addToCartButton.setText("Already in cart");
+                Timer t = new Timer(1200, ev -> addToCartButton.setText("Add To Cart"));
+                t.setRepeats(false);
+                t.start();
+                return;
+            }
             Cart.addProduct(products);
-            Cart.addProductToCartCSV(products);
+            Cart.updateCartCSV(Cart.readCart(), productsList);
 
             // update cart badge
             int count = Cart.getTotalCountOfItems();
             cartCountLabel.setText(String.valueOf(count));
             cartCountLabel.setVisible(count > 0);
-
         });
 
         panel.add(addToCartButton);

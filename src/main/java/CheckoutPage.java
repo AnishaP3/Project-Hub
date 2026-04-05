@@ -93,7 +93,7 @@ public class CheckoutPage extends JPanel {
         JPanel mainProductPanel = new JPanel(new BorderLayout());
         mainProductPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY,1));
         mainProductPanel.setBackground(Color.WHITE);
-        mainProductPanel.setMaximumSize(new Dimension(1000, 400));
+        mainProductPanel.setMaximumSize(new Dimension(1000, 250));
 
         //getting the matching photo to product
         Products currentProduct = null;
@@ -139,7 +139,7 @@ public class CheckoutPage extends JPanel {
         JLabel quantityPrice = new JLabel(String.format("$%.2f",currentProduct.getPrice() * quantity));
         quantityPrice.setHorizontalAlignment(JLabel.CENTER);
         quantityPrice.setVerticalAlignment(JLabel.CENTER);
-        quantityPrice.setFont(new Font("SansSerif", Font.BOLD, 30));
+        quantityPrice.setFont(new Font("SansSerif", Font.BOLD, 20));
         quantityPrice.setBackground(Color.WHITE);
         quantityPrice.setBorder(new EmptyBorder(10,10,10,10));
 
@@ -149,7 +149,7 @@ public class CheckoutPage extends JPanel {
         infoPanel.setBackground(Color.WHITE);
         infoPanel.setBorder(new EmptyBorder(10,10,10,10));
         JLabel nameLabel = new JLabel(productName);
-        nameLabel.setFont(new Font("SansSerif", Font.BOLD, 35));
+        nameLabel.setFont(new Font("SansSerif", Font.BOLD, 22));
 
 
         // ========== ADDED: Make product name clickable ==========
@@ -167,22 +167,22 @@ public class CheckoutPage extends JPanel {
         // =============== END ADDED =================
 
         JLabel priceLabel = new JLabel(String.format("$%.2f", currentProduct.getPrice()));
-        priceLabel.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        priceLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
 
         JLabel quantityLabel = new JLabel("Quantity: " + quantity);
-        quantityLabel.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        quantityLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
 
         JButton addQuantityButton = new JButton("+");
         JButton subtractQuantityButton = new JButton("-");
-        addQuantityButton.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        addQuantityButton.setFont(new Font("SansSerif", Font.PLAIN, 13));
         addQuantityButton.setForeground(Color.WHITE);
         subtractQuantityButton.setForeground(Color.WHITE);
 
         addQuantityButton.setBackground(new Color(20, 18, 14));
-        subtractQuantityButton.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        subtractQuantityButton.setFont(new Font("SansSerif", Font.PLAIN, 13));
         subtractQuantityButton.setBackground(new Color(20, 18, 14));
 
-       // Products finalProduct = currentProduct;
+        // Products finalProduct = currentProduct;
         addQuantityButton.addActionListener(e -> {
             Cart.addProduct(finalProduct);
             Cart.updateCartCSV(Cart.readCart(), allProducts);
@@ -221,7 +221,7 @@ public class CheckoutPage extends JPanel {
         });
 
         JPanel buttonPanel = new JPanel(new FlowLayout());
-        buttonPanel.setMaximumSize(new Dimension(100,100));
+        buttonPanel.setMaximumSize(new Dimension(70, 70));
         buttonPanel.setBackground(Color.WHITE);
         buttonPanel.add(addQuantityButton);
         buttonPanel.add(subtractQuantityButton);
@@ -243,47 +243,6 @@ public class CheckoutPage extends JPanel {
         mainProductPanel.add(quantityPrice, BorderLayout.EAST);
         mainProductPanel.add(infoPanel, BorderLayout.CENTER);
 
-        // === ADDED: Accessory button (only at the bottom, after everything is created) ====
-        Products accessory = FreqBought.getAccessoryForCheckout(productName);
-        if (accessory != null) {
-            JPanel accessoryRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
-            accessoryRow.setBackground(Color.WHITE);
-
-            JLabel plusIcon = new JLabel("+");
-            plusIcon.setFont(new Font("SansSerif", Font.BOLD, 12));
-            plusIcon.setForeground(new Color(212, 175, 55));
-
-            JLabel accessoryName = new JLabel(accessory.getName());
-            accessoryName.setFont(new Font("SansSerif", Font.PLAIN, 10));
-            accessoryName.setForeground(new Color(100, 100, 100));
-
-            JButton addAccessoryBtn = new JButton("ADD");
-            addAccessoryBtn.setFont(new Font("SansSerif", Font.BOLD, 9));
-            addAccessoryBtn.setBackground(new Color(212, 175, 55));
-            addAccessoryBtn.setForeground(Color.BLACK);
-            addAccessoryBtn.setFocusPainted(false);
-            addAccessoryBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            addAccessoryBtn.setPreferredSize(new Dimension(80, 22));
-            addAccessoryBtn.addActionListener(e -> {
-                Cart.addProduct(accessory);
-                Cart.addProductToCartCSV(accessory);
-                Cart.updateCartCSV(Cart.readCart(), allProducts);
-                reloadPage();
-
-                int count = Cart.getTotalCountOfItems();
-                ui.cartCountLabel.setText(String.valueOf(count));
-                ui.cartCountLabel.setVisible(count > 0);
-            });
-
-            accessoryRow.add(plusIcon);
-            accessoryRow.add(accessoryName);
-            accessoryRow.add(addAccessoryBtn);
-
-            // Add the accessory row to infoPanel (this exists now)
-            infoPanel.add(Box.createVerticalStrut(10));
-            infoPanel.add(accessoryRow);
-        }
-        // ========== END ADDED ==========
 
         return mainProductPanel;
     }
@@ -297,36 +256,36 @@ public class CheckoutPage extends JPanel {
         JPanel subtotalRow = new JPanel(new BorderLayout());
         subtotalRow.setBackground(totalMainPanel.getBackground());
         JLabel subtotalText = new JLabel("Subtotal:");
-        subtotalText.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        subtotalText.setFont(new Font("SansSerif", Font.PLAIN, 15));
         subtotalLabel = new JLabel("$0.00 CAD");
-        subtotalLabel.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        subtotalLabel.setFont(new Font("SansSerif", Font.PLAIN, 15));
         subtotalRow.add(subtotalText, BorderLayout.WEST);
         subtotalRow.add(subtotalLabel, BorderLayout.EAST);
 
         JPanel taxRow = new JPanel(new BorderLayout());
         taxRow.setBackground(totalMainPanel.getBackground());
         JLabel taxText = new JLabel("Tax (13%):");
-        taxText.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        taxText.setFont(new Font("SansSerif", Font.PLAIN, 15));
         taxLabel = new JLabel("$0.00 CAD");
-        taxLabel.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        taxLabel.setFont(new Font("SansSerif", Font.PLAIN, 15));
         taxRow.add(taxText, BorderLayout.WEST);
         taxRow.add(taxLabel, BorderLayout.EAST);
 
         JPanel totalRow = new JPanel(new BorderLayout());
         totalRow.setBackground(totalMainPanel.getBackground());
         JLabel totalText = new JLabel("Total:");
-        totalText.setFont(new Font("SansSerif", Font.BOLD, 22));
+        totalText.setFont(new Font("SansSerif", Font.BOLD, 17));
         totalPriceLabel = new JLabel("$0.00 CAD");
-        totalPriceLabel.setFont(new Font("SansSerif", Font.BOLD, 22));
+        totalPriceLabel.setFont(new Font("SansSerif", Font.BOLD, 17));
         totalRow.add(totalText, BorderLayout.WEST);
         totalRow.add(totalPriceLabel, BorderLayout.EAST);
 
         // Checkout button
         JButton checkoutButton = new JButton("Checkout");
-        checkoutButton.setFont(new Font("SansSerif", Font.BOLD, 20));
+        checkoutButton.setFont(new Font("SansSerif", Font.BOLD, 15));
         checkoutButton.setForeground(Color.WHITE);
         checkoutButton.setBackground(new Color(20, 18, 14));
-        checkoutButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
+        checkoutButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
         checkoutButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         checkoutButton.addActionListener(e -> {
@@ -353,13 +312,42 @@ public class CheckoutPage extends JPanel {
             totalPriceLabel.setText("$0.00 CAD");
         });
 
+        // Clear button
+        JButton clearButton = new JButton("Clear");
+        clearButton.setFont(new Font("SansSerif", Font.BOLD, 15));
+        clearButton.setForeground(Color.WHITE);
+        clearButton.setBackground(new Color(160, 50, 50));
+        clearButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
+        clearButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        clearButton.setFocusPainted(false);
+        clearButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        clearButton.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Are you sure you want to clear your cart?",
+                    "Clear Cart",
+                    JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                Cart.clearCart();
+                Cart.updateCartCSV(new HashMap<>(), allProducts);
+                ui.cartCountLabel.setText("0");
+                ui.cartCountLabel.setVisible(false);
+                reloadPage();
+                subtotalLabel.setText("$0.00 CAD");
+                taxLabel.setText("$0.00 CAD");
+                totalPriceLabel.setText("$0.00 CAD");
+            }
+        });
+
         totalMainPanel.add(subtotalRow);
-        totalMainPanel.add(Box.createVerticalStrut(15));
+        totalMainPanel.add(Box.createVerticalStrut(8));
         totalMainPanel.add(taxRow);
-        totalMainPanel.add(Box.createVerticalStrut(15));
+        totalMainPanel.add(Box.createVerticalStrut(8));
         totalMainPanel.add(totalRow);
-        totalMainPanel.add(Box.createVerticalStrut(30));
+        totalMainPanel.add(Box.createVerticalStrut(15));
         totalMainPanel.add(checkoutButton);
+        totalMainPanel.add(Box.createVerticalStrut(8));
+        totalMainPanel.add(clearButton);
 
         updateTotal();
         return totalMainPanel;
