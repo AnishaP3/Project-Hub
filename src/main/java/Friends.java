@@ -13,35 +13,63 @@ public class Friends extends JPanel {
     public Friends(List<Products> productsList, UI ui) {
         setLayout(new BorderLayout());
         setBackground(new Color(245, 241, 232));
+
+        // Top panel with title and refresh button
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBorder(new EmptyBorder(0, 30, 10, 30));
+        topPanel.setOpaque(false);
+
         JLabel title = new JLabel("Friends Activity");
-        title.setFont(new Font("Serif", Font.BOLD, 28));
+        title.setFont(new Font("Serif", Font.BOLD, 32));
         title.setForeground(new Color(212, 175, 55));
         title.setBorder(new EmptyBorder(30, 30, 10, 30));
-        add(title, BorderLayout.NORTH);
+        topPanel.add(title, BorderLayout.WEST);
 
+        JButton refresh = new JButton("↻ Refresh");
+        refresh.setFont(new Font("SansSerif", Font.BOLD, 13));
+        refresh.setBackground(new Color(212, 175, 55));
+        refresh.setForeground(Color.BLACK);
+        refresh.setFocusPainted(false);
+        refresh.setBorder(new EmptyBorder(8, 15, 10, 15));
+        refresh.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        JPanel refreshWrapper = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 25));
+        refreshWrapper.setOpaque(false);
+        refreshWrapper.add(refresh);
+        topPanel.add(refreshWrapper, BorderLayout.EAST);
+
+        add(topPanel, BorderLayout.NORTH);
+
+        // Friends panel
         JPanel friendsPanel = new JPanel();
         friendsPanel.setLayout(new BoxLayout(friendsPanel, BoxLayout.Y_AXIS));
         friendsPanel.setBackground(new Color(245, 241, 232));
         friendsPanel.setBorder(new EmptyBorder(10, 30, 10, 30));
-
-        // Shuffle and pick 6 random products
-        List<Products> shuffled = new ArrayList<>(productsList);
-        Collections.shuffle(shuffled);
-        List<Products> picks = shuffled.subList(0, 6);
-        Random rand = new Random();
-        for (int i = 0; i < picks.size(); i++) {
-            Products p = picks.get(i);
-            String friend = friendNames[rand.nextInt(friendNames.length)];
-            String time = timeAgo[i % timeAgo.length];
-            friendsPanel.add(buildPanel(p, friend, time, ui));
-            friendsPanel.add(Box.createRigidArea(new Dimension(0, 12)));
-        }
 
         // Scroll bar
         JScrollPane scrollPane = new JScrollPane(friendsPanel);
         scrollPane.setBorder(null);
         scrollPane.getVerticalScrollBar().setUnitIncrement(12);
         add(scrollPane, BorderLayout.CENTER);
+
+        // Refresh button functionality
+        refresh.addActionListener(e -> {
+            friendsPanel.removeAll();
+            // Shuffle and pick 6 random products
+            List<Products> shuffled = new ArrayList<>(productsList);
+            Collections.shuffle(shuffled);
+            List<Products> picks = shuffled.subList(0, 6);
+            Random rand = new Random();
+            for (int i = 0; i < picks.size(); i++) {
+                Products p = picks.get(i);
+                String friend = friendNames[rand.nextInt(friendNames.length)];
+                String time = timeAgo[i % timeAgo.length];
+                friendsPanel.add(buildPanel(p, friend, time, ui));
+                friendsPanel.add(Box.createRigidArea(new Dimension(0, 12)));
+            }
+            friendsPanel.revalidate();
+            friendsPanel.repaint();
+        });
+        refresh.doClick();
     }
 
     public JPanel buildPanel(Products product, String friend, String time, UI ui) {
@@ -94,6 +122,7 @@ public class Friends extends JPanel {
         button.setBackground(new Color(212, 175, 55));
         button.setForeground(Color.BLACK);
         button.setFocusPainted(false);
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         button.addActionListener(e -> {
             Cart.addProduct(product);
             Cart.addProductToCartCSV(product);
