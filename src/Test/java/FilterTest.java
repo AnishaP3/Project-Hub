@@ -6,6 +6,15 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
+/**
+ * Unit Tests for Filter.applyFilters()
+ *
+ * UT-01-CB: Color = “black” → Only black products are returned
+ * UT-02-CB: Material = “Cotton” → Only cotton products are returned
+ * UT-03-CB: No filters → All products returned
+ */
+
 public class FilterTest {
 
     // Test products

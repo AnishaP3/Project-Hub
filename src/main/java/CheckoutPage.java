@@ -289,19 +289,30 @@ public class CheckoutPage extends JPanel {
         checkoutButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         checkoutButton.addActionListener(e -> {
-            // Clear the cart
-            Cart.clearCart();
-            Cart.updateCartCSV(new HashMap<>(), allProducts);
+
 
             // Update the cart badge in the main UI
             ui.cartCountLabel.setText("0");
             ui.cartCountLabel.setVisible(false);
 
-            // Show confirmation message
-            JOptionPane.showMessageDialog(this,
-                    "Thank you for your purchase!\nYour order has been placed.",
-                    "Checkout Successful",
-                    JOptionPane.INFORMATION_MESSAGE);
+            if(Cart.readCart().isEmpty()){
+                JOptionPane.showMessageDialog(this,
+                        "Please add items to Cart to proceed to checkout.",
+                        "No Items in Cart",
+                        JOptionPane.INFORMATION_MESSAGE);
+
+            }
+            else {
+                // Show confirmation message
+                JOptionPane.showMessageDialog(this,
+                        "Thank you for your purchase!\nYour order has been placed.",
+                        "Checkout Successful",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+
+            // Clear the cart
+            Cart.clearCart();
+            Cart.updateCartCSV(new HashMap<>(), allProducts);
 
             // Refresh the checkout page
             reloadPage();
