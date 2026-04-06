@@ -202,6 +202,7 @@ public class CheckoutPage extends JPanel {
                 if(newQuantity <= 0){
                     cartPanel.remove(mainProductPanel);
                     Cart.removeProduct(productName);
+                    updateTotal();
 
                     Cart.updateCartCSV(Cart.readCart(), allProducts);
                     reloadPage();
@@ -384,13 +385,14 @@ public class CheckoutPage extends JPanel {
                 subtotal += products.getPrice() * quantity;
             }
 
-            double tax = subtotal * 0.13;
-            double total = subtotal + tax;
 
-            subtotalLabel.setText(String.format("$%.2f CAD", subtotal));
-            taxLabel.setText(String.format("$%.2f CAD", tax));
-            totalPriceLabel.setText(String.format("$%.2f CAD", total));
         }
+        double tax = subtotal * 0.13;
+        double total = subtotal + tax;
+
+        subtotalLabel.setText(String.format("$%.2f CAD", subtotal));
+        taxLabel.setText(String.format("$%.2f CAD", tax));
+        totalPriceLabel.setText(String.format("$%.2f CAD", total));
     }
 
     public void getAllProducts() {
