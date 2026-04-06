@@ -2,7 +2,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ProductsTest {
 
@@ -84,6 +84,24 @@ public class ProductsTest {
         assertFalse(first.getDetails().isEmpty());
         assertFalse(first.getPrice() <= 0);
         assertFalse(first.getRating() < 0);
+    }
+
+    //testing if products are read correctly from the CSV file
+    @Test
+    void readProductsCSV(){
+        ClassLoader classLoader = getClass().getClassLoader();
+        List<Products> products = Products.readProductCSV(classLoader);
+
+        assertNotNull(products);
+
+        Products products1 = products.get(0);
+        assertEquals("Casual Hoodie", products1.getName());
+        assertEquals(39.99, products1.getPrice());
+        assertEquals("Hoodie", products1.getCategory());
+        assertEquals("Grey", products1.getColor());
+        assertEquals("Cotton,Polyester", products1.getMaterial());
+        assertEquals("Small,Large", products1.getSize());
+        assertEquals(4.5, products1.getRating());
     }
 }
 
