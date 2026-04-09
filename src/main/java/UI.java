@@ -138,12 +138,6 @@ public class UI extends JPanel {
         JPanel cartPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
         cartPanel.setOpaque(false);
 
-        ImageIcon cartIcon = new ImageIcon(getClass().getResource("Cart/shopping_cart.png"));
-        Image cartImage = cartIcon.getImage();
-        Image newCartImage = cartImage.getScaledInstance(40, 40, 0);
-        cartIcon = new ImageIcon(newCartImage);
-
-//        JButton cartButton = new JButton(cartIcon);
         JButton cartButton = new JButton("🛒");
         cartButton.setFont(new Font("SansSerif", Font.PLAIN, 25));
         cartButton.setForeground(Color.WHITE);
@@ -271,7 +265,7 @@ public class UI extends JPanel {
         RecommendationPage recPage = new RecommendationPage(this);
         pages.add(recPage, "RECOMMENDATIONS");
 
-        //Making the Quiz page:
+        //Making the Quiz page
         QuizPage quiz = new QuizPage(cardLayout, pages, recPage);
         pages.add(quiz, "QUIZ");
 
@@ -283,7 +277,7 @@ public class UI extends JPanel {
         Friends friends = new Friends(productsList, this);
         pages.add(friends, "FRIENDS");
 
-        //making the menu buttons
+        // Making the menu buttons
         JButton homeButton = createMenuButton("ʜᴏᴍᴇ", e -> cardLayout.show(pages, "TITLE"));
         JButton shoppingMenuButton = createMenuButton("ᴘʀᴏᴅᴜᴄᴛs", e -> cardLayout.show(pages, "SHOPPING"));
         JButton quizButton = createMenuButton("ǫᴜɪᴢ", e -> cardLayout.show(pages, "QUIZ"));
@@ -294,7 +288,7 @@ public class UI extends JPanel {
         leftHeader.setOpaque(false);
         leftHeader.add(companyName);
 
-        //menu buttons
+        // Menu buttons
         leftHeader.add(homeButton);
         leftHeader.add(shoppingMenuButton);
         leftHeader.add(quizButton);
@@ -589,10 +583,6 @@ public class UI extends JPanel {
         div.setBackground(new Color(220, 220, 220));
         return div;
     }
-
-    // ----------------------
-    // Iteration 2 helper functions
-    // ----------------------
 
     //This function helps make menu buttons
     public static JButton createMenuButton(String text, ActionListener actionListener) {

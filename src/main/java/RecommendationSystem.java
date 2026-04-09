@@ -109,6 +109,7 @@ public class RecommendationSystem {
                 answeredQuestions++;
             }
 
+            // Calculates points
             int threshold;
             if (answeredQuestions <= 3) {
                 threshold = 2;

@@ -10,6 +10,8 @@ import java.util.Random;
 public class Friends extends JPanel {
     String[] friendNames = {"Alexis", "Samantha", "Riley", "Adriana", "Jane"};
     String[] timeAgo = {"Just now", "1 hr ago", "Yesterday", "Long time ago", "5 min ago"};
+
+
     public Friends(List<Products> productsList, UI ui) {
         setLayout(new BorderLayout());
         setBackground(new Color(245, 241, 232));
@@ -72,6 +74,15 @@ public class Friends extends JPanel {
         refresh.doClick();
     }
 
+
+    /**
+     * Builds the UI Panel to display friends and what they bought
+     * @param product
+     * @param friend
+     * @param time
+     * @param ui
+     * @return
+     */
     public JPanel buildPanel(Products product, String friend, String time, UI ui) {
         JPanel panel = new JPanel(new BorderLayout(15, 0));
         panel.setBackground(Color.WHITE);

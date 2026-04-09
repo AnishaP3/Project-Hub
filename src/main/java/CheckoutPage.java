@@ -11,7 +11,6 @@ public class CheckoutPage extends JPanel {
     public List<Products> allProducts;
     private JPanel contentPanel;
     private JPanel cartPanel;
-
     private JLabel totalPriceLabel;
     private JLabel taxLabel;
     private JLabel subtotalLabel;
@@ -34,6 +33,7 @@ public class CheckoutPage extends JPanel {
 
         getAllProducts();
 
+        // Panel to display all checkout items
         contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 
@@ -45,6 +45,7 @@ public class CheckoutPage extends JPanel {
         cartPanel = new JPanel();
         cartPanel.setLayout(new BoxLayout(cartPanel, BoxLayout.Y_AXIS));
 
+        // Reads all items in the cart and adds them to the panel
         Map<String, Integer> cartMap = Cart.readCart();
         for (Map.Entry<String, Integer> entry : cartMap.entrySet()) {
             JPanel itemPanel = itemsInCart(entry.getKey(), entry.getValue());
@@ -61,6 +62,7 @@ public class CheckoutPage extends JPanel {
         scrollPane.setPreferredSize(new Dimension(700, 500));
         scrollPane.setVisible(true);
 
+        // Panel for the that holds the total cost if the items
         JPanel totalPanel = totalPanelSection();
         wrapper.add(totalPanel, BorderLayout.SOUTH);
 
@@ -69,7 +71,7 @@ public class CheckoutPage extends JPanel {
         centerPanel.add(scrollPane, BorderLayout.CENTER);
         add(centerPanel, BorderLayout.CENTER);
 
-        //TODO: RECOMMENDATION PANEL
+        // RECOMMENDATION PANEL
         recommendationsPanel = new JPanel();
         recommendationsPanel.setLayout(new BoxLayout(recommendationsPanel, BoxLayout.Y_AXIS));
         recommendationsPanel.setBackground(Color.WHITE);
@@ -86,9 +88,14 @@ public class CheckoutPage extends JPanel {
         recommendationsPanel.add(Box.createRigidArea(new Dimension(0, 15)));
 
         centerPanel.add(recommendationsPanel, BorderLayout.EAST);
-
     }
 
+
+    /**
+     * Creates a panel for items in the cart
+     * @param productName
+     * @param quantity
+     */
     public JPanel itemsInCart(String productName, int quantity) {
         JPanel mainProductPanel = new JPanel(new BorderLayout());
         mainProductPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY,1));
@@ -152,7 +159,7 @@ public class CheckoutPage extends JPanel {
         nameLabel.setFont(new Font("SansSerif", Font.BOLD, 22));
 
 
-        // ========== ADDED: Make product name clickable ==========
+        // Make product name clickable
         nameLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         nameLabel.setForeground(new Color(212, 175, 55));
         Products finalProduct = currentProduct;
@@ -164,14 +171,16 @@ public class CheckoutPage extends JPanel {
                 ui.cardLayout.show(ui.pages, "DETAIL");
             }
         });
-        // =============== END ADDED =================
 
+
+        // Adding labels for price and quantity
         JLabel priceLabel = new JLabel(String.format("$%.2f", currentProduct.getPrice()));
         priceLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
 
         JLabel quantityLabel = new JLabel("Quantity: " + quantity);
         quantityLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
 
+        // Buttons to change the quantity
         JButton addQuantityButton = new JButton("+");
         JButton subtractQuantityButton = new JButton("-");
         addQuantityButton.setFont(new Font("SansSerif", Font.PLAIN, 13));
@@ -182,7 +191,7 @@ public class CheckoutPage extends JPanel {
         subtractQuantityButton.setFont(new Font("SansSerif", Font.PLAIN, 13));
         subtractQuantityButton.setBackground(new Color(20, 18, 14));
 
-        // Products finalProduct = currentProduct;
+        // Add action of add quantity button
         addQuantityButton.addActionListener(e -> {
             Cart.addProduct(finalProduct);
             Cart.updateCartCSV(Cart.readCart(), allProducts);
@@ -194,6 +203,8 @@ public class CheckoutPage extends JPanel {
             updateTotal();
             reloadPage();
         });
+
+        // Add action of subtract quantity button
         subtractQuantityButton.addActionListener(e -> {
             Map<String, Integer> cartMap = Cart.readCart();
 
@@ -221,12 +232,14 @@ public class CheckoutPage extends JPanel {
             };
         });
 
+        // Adding a button panel for the add and subtract quantity buttons
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.setMaximumSize(new Dimension(70, 70));
         buttonPanel.setBackground(Color.WHITE);
         buttonPanel.add(addQuantityButton);
         buttonPanel.add(subtractQuantityButton);
 
+        // Panel for name, price, and quantity info
         infoPanel.add(nameLabel);
         infoPanel.add(Box.createVerticalStrut(5));
         infoPanel.add(priceLabel);
@@ -248,12 +261,15 @@ public class CheckoutPage extends JPanel {
         return mainProductPanel;
     }
 
+    // Creates the total panel
     public JPanel totalPanelSection(){
+        // Creates the panel for the prices
         JPanel totalMainPanel = new JPanel();
         totalMainPanel.setLayout(new BoxLayout(totalMainPanel, BoxLayout.Y_AXIS));
         totalMainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         totalMainPanel.setBackground(new Color(218, 190, 90));
 
+        // Panel for the subtotal
         JPanel subtotalRow = new JPanel(new BorderLayout());
         subtotalRow.setBackground(totalMainPanel.getBackground());
         JLabel subtotalText = new JLabel("Subtotal:");
@@ -263,6 +279,7 @@ public class CheckoutPage extends JPanel {
         subtotalRow.add(subtotalText, BorderLayout.WEST);
         subtotalRow.add(subtotalLabel, BorderLayout.EAST);
 
+        // Panel for the tax
         JPanel taxRow = new JPanel(new BorderLayout());
         taxRow.setBackground(totalMainPanel.getBackground());
         JLabel taxText = new JLabel("Tax (13%):");
@@ -272,6 +289,7 @@ public class CheckoutPage extends JPanel {
         taxRow.add(taxText, BorderLayout.WEST);
         taxRow.add(taxLabel, BorderLayout.EAST);
 
+        // Panel for the total
         JPanel totalRow = new JPanel(new BorderLayout());
         totalRow.setBackground(totalMainPanel.getBackground());
         JLabel totalText = new JLabel("Total:");
@@ -365,6 +383,7 @@ public class CheckoutPage extends JPanel {
         return totalMainPanel;
     }
 
+    // Updates the total when ever items are added or removed
     public void updateTotal(){
         Map<String, Integer> cartMap = Cart.readCart();
         double subtotal = 0;
@@ -395,6 +414,7 @@ public class CheckoutPage extends JPanel {
         totalPriceLabel.setText(String.format("$%.2f CAD", total));
     }
 
+    // Gets all products from the csv
     public void getAllProducts() {
         Products productClass = new Products();
         allProducts = productClass.readProductCSV(getClass().getClassLoader());
@@ -406,6 +426,7 @@ public class CheckoutPage extends JPanel {
         Cart.loadCartFromCSV();
     }
 
+    // Reloads the ckeckout page
     public void reloadPage() {
         // Reload cart data from CSV
         Cart.loadCartFromCSV();
@@ -486,6 +507,7 @@ public class CheckoutPage extends JPanel {
         }
     }
 
+    // Creates Recommendation Card for Recommended items
     private JPanel createRecommendationCard(Products accessory) {
         JPanel card = new JPanel(new BorderLayout());
         card.setBackground(new Color(250, 248, 240));

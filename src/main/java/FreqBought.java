@@ -1,10 +1,12 @@
-import java.util.*;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
-import javax.swing.border.*;
 import java.io.InputStream;
+import java.util.*;
 import java.util.List;
-import java.util.Scanner;
+
+
 
 public class FreqBought {
 
@@ -43,6 +45,7 @@ public class FreqBought {
                     String[] parts = line.split("\\|");
 
                     if (parts.length == 9) {
+                        // Saves each detail to a variable
                         String name = parts[0].trim();
                         double price = Double.parseDouble(parts[1].trim());
                         String imagePath = parts[2].trim();
@@ -102,9 +105,14 @@ public class FreqBought {
      * @return JPanel with the accessory display
      */
     public static JPanel createFeaturedAccessoryPanel(Products mainProduct, ClassLoader classLoader) {
-       /* System.out.println("=== Looking for accessory for: " + mainProduct.getName());
+        Products accessory = getAccessoryForProduct(mainProduct.getName());
 
-        // TEMPORARY PLACEHOLDER - Full functionality coming in next iteration
+        if (accessory == null) {
+            System.out.println("No accessory found for: " + mainProduct.getName());
+        } else {
+            System.out.println("Found accessory: " + accessory.getName());
+        }
+
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(new Color(245, 241, 232));
@@ -133,69 +141,24 @@ public class FreqBought {
         panel.add(sep);
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
 
-        // Placeholder message
-        JLabel placeholderLabel = new JLabel("✨ Accessories coming in next iteration! ✨");
-        placeholderLabel.setFont(new Font("SansSerif", Font.ITALIC, 14));
-        placeholderLabel.setForeground(new Color(150, 150, 150));
-        placeholderLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(placeholderLabel);
+        // Null check
+        if (accessory == null) {
+            JLabel noAccessory = new JLabel("No featured accessory available for this item.");
+            noAccessory.setFont(new Font("SansSerif", Font.ITALIC, 14));
+            noAccessory.setForeground(new Color(150, 150, 150));
+            noAccessory.setAlignmentX(Component.CENTER_ALIGNMENT);
+            panel.add(noAccessory);
+        } else {
+            // Create the accessory card
+            JPanel accessoryCard = createAccessoryCard(accessory);
+            JPanel centeredCard = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            centeredCard.setBackground(new Color(245, 241, 232));
+            centeredCard.add(accessoryCard);
+            panel.add(centeredCard);
+        }
 
         return panel;
-*/
-    ///* FULL CODE FOR NEXT ITERATION - COMMENTED OUT
-    Products accessory = getAccessoryForProduct(mainProduct.getName());
 
-    if (accessory == null) {
-        System.out.println("No accessory found for: " + mainProduct.getName());
-    } else {
-        System.out.println("Found accessory: " + accessory.getName());
-    }
-
-    JPanel panel = new JPanel();
-    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-    panel.setBackground(new Color(245, 241, 232));
-    panel.setBorder(new EmptyBorder(20, 40, 30, 40));
-
-    // Title section
-    JLabel titleLabel = new JLabel("COMPLETE THE LOOK");
-    titleLabel.setFont(new Font("Georgia", Font.BOLD, 22));
-    titleLabel.setForeground(new Color(212, 175, 55));
-    titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-    panel.add(titleLabel);
-
-    JLabel subtitleLabel = new JLabel("Frequently bought together");
-    subtitleLabel.setFont(new Font("SansSerif", Font.PLAIN, 12));
-    subtitleLabel.setForeground(new Color(150, 150, 150));
-    subtitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-    panel.add(subtitleLabel);
-
-    panel.add(Box.createRigidArea(new Dimension(0, 20)));
-
-    // Separator
-    JSeparator sep = new JSeparator();
-    sep.setMaximumSize(new Dimension(600, 1));
-    sep.setForeground(new Color(220, 210, 200));
-    sep.setAlignmentX(Component.CENTER_ALIGNMENT);
-    panel.add(sep);
-    panel.add(Box.createRigidArea(new Dimension(0, 20)));
-
-    if (accessory == null) {
-        JLabel noAccessory = new JLabel("No featured accessory available for this item.");
-        noAccessory.setFont(new Font("SansSerif", Font.ITALIC, 14));
-        noAccessory.setForeground(new Color(150, 150, 150));
-        noAccessory.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(noAccessory);
-    } else {
-        // Create the accessory card
-        JPanel accessoryCard = createAccessoryCard(accessory);
-        JPanel centeredCard = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        centeredCard.setBackground(new Color(245, 241, 232));
-        centeredCard.add(accessoryCard);
-        panel.add(centeredCard);
-    }
-
-    return panel;
-   // */
     }
 
 
@@ -289,7 +252,7 @@ public class FreqBought {
     }
 
     /**
-     * Get all accessories (for testing)
+     * Get all accessories
      */
     public static List<Products> getAllAccessories() {
         return allAccessories;
@@ -320,50 +283,4 @@ public class FreqBought {
         return productToAccessory;
     }
 
-    /**
-     * Simple cart storage for now
-     */
-    private static Map<String, Integer> tempCart = new HashMap<>();
-    private static Map<String, Products> productCache = new HashMap<>();
-
-    public static void addToCart(Products product, int quantity) {
-        String productName = product.getName();
-        productCache.put(productName, product);
-
-        if (tempCart.containsKey(productName)) {
-            tempCart.put(productName, tempCart.get(productName) + quantity);
-        } else {
-            tempCart.put(productName, quantity);
-        }
-
-        System.out.println("Added " + quantity + " x " + productName + " to cart");
-    }
-
-    public static int getTotalItemCount() {
-        int total = 0;
-        for (int qty : tempCart.values()) {
-            total += qty;
-        }
-        return total;
-    }
-
-    public static double getTotalPrice() {
-        double total = 0;
-        for (Map.Entry<String, Integer> entry : tempCart.entrySet()) {
-            Products p = productCache.get(entry.getKey());
-            if (p != null) {
-                total += p.getPrice() * entry.getValue();
-            }
-        }
-        return total;
-    }
-
-    public static Map<String, Integer> getCart() {
-        return tempCart;
-    }
-
-    public static void clearCart() {
-        tempCart.clear();
-        productCache.clear();
-    }
 }

@@ -3,6 +3,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 
+/*
+    Displays the product details when the product name is clicked
+ */
 
 public class ProductDetail extends JPanel {
     private final Products product;

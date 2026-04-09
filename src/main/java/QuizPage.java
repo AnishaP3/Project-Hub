@@ -62,7 +62,7 @@ public class QuizPage extends JPanel {
         quizTitle.setFont(new Font("Georgia", Font.BOLD, 34));
         quizTitle.setForeground(new Color(218, 190, 90));
         quizTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-
+        // ── Subtitle ─────────────────────────────────────────────────────────────
         JLabel quizSubtitle = new JLabel("Answer each question to get personalised recommendations");
         quizSubtitle.setFont(new Font("SansSerif", Font.PLAIN, 14));
         quizSubtitle.setForeground(new Color(160, 148, 120));
@@ -120,6 +120,7 @@ public class QuizPage extends JPanel {
             card.add(questionHeader);
             card.add(Box.createRigidArea(new Dimension(0, 12)));
 
+            // ── Separator ─────────────────────────────────────────────────────────────
             JSeparator innerSep = new JSeparator();
             innerSep.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
             innerSep.setForeground(new Color(235, 225, 200));

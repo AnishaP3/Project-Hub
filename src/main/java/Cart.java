@@ -1,7 +1,12 @@
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 public class Cart {
     private static final Map<String, Integer> cart = new HashMap<>();
@@ -17,14 +22,17 @@ public class Cart {
     }
     Cart(){}
 
+    // Getters
     public String getName(){return name;}
     public double getPrice(){return price;}
     public int getPriceQuantity(){return quantity;}
 
+    // Setters
     public void setName(String name){this.name = name;}
     public void setPrice(double price){this.price = price;}
     public void setQuantity(int quantity){this.quantity = quantity;}
 
+    // Adds the product to the cart
     public static void addProduct(Products p) {
         if (cart.containsKey(p.getName())) {
             cart.put(p.getName(), cart.get(p.getName()) + 1);
@@ -33,15 +41,18 @@ public class Cart {
         }
     }
 
+    // Removes the product from the cart
     public static void removeProduct(String product) {
         cart.remove(product);
     }
 
+    // Returns the cart
     public static Map<String, Integer> readCart() {
         return cart;
     }
 
-    public static int getTotalCountOfItems() {
+    // Returns total items in the cart
+    public static int getTotalCountOfItems()   {
         int total = 0;
         for (int quantity : cart.values()) {
             total += quantity;
@@ -49,10 +60,12 @@ public class Cart {
         return total;
     }
 
+    // Clears the cart
     public static void clearCart() {
         cart.clear();
     }
 
+    // Clears the cart csv
     public static void clearCartCSV() {
         String filePath = "resources/Cart/cart.csv";
         try (java.io.PrintWriter writer = new java.io.PrintWriter(filePath)) {
@@ -63,6 +76,7 @@ public class Cart {
         cart.clear();
     }
 
+    // Adds the product to the Cart csv
     public static void addProductToCartCSV(Products p) {
         String filePath = "resources/Cart/cart.csv";
         Map<String, Cart> merged = new HashMap<>();
@@ -98,6 +112,7 @@ public class Cart {
         }
     }
 
+    // Updates the cart csv with changes
     public static void updateCartCSV(Map<String, Integer> cartMap, List<Products> allProducts) {
         String filePath = filePath = "resources/Cart/cart.csv";
         try (PrintWriter writer = new PrintWriter(filePath)) {
@@ -120,6 +135,7 @@ public class Cart {
         }
     }
 
+    // Loads cart items from the csv
     public static void loadCartFromCSV() {
         String filePath = "resources/Cart/cart.csv";
         try (Scanner scanner = new Scanner(new File(filePath))) {
