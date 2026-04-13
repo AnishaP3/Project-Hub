@@ -71,6 +71,9 @@ ___
 - Personality Quiz
   - Answer a short quiz 
   - Receive personalized clothing recommendations
+- Friends
+  - View what your friends have bought
+ 
 
 > TIP: To see the product details click the product name
         
